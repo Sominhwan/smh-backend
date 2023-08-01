@@ -18,6 +18,7 @@ public class NoticeBoardDTO {
 		private String title;
 		private String writer;
 		private String content;
+		private int viewsCount;
 		private String insertDate;
 		private String updateDate;
 		private String deleteDate;

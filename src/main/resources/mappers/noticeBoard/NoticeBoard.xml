@@ -6,12 +6,14 @@
 			title,
 			writer,
 			content,
+			views_count,
 			insert_date
 		)
 		VALUES(
 			#{title},
 			#{writer},
 			#{content},
+			0,
 			NOW()
 		)
 	</insert>

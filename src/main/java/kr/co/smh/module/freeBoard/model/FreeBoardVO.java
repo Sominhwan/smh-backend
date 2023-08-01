@@ -1,4 +1,4 @@
-package kr.co.smh.module.noticeBoard.model;
+package kr.co.smh.module.freeBoard.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class NoticeBoardVO {
+public class FreeBoardVO {
 	private int noticeId;
 	private String title;
 	private String writer;
@@ -19,5 +19,5 @@ public class NoticeBoardVO {
 	private int viewsCount;
 	private String insertDate;
 	private String updateDate;
-	private String deleteDate;
+	private String deleteDate;	
 }
