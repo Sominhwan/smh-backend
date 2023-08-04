@@ -7,7 +7,7 @@
 			writer,
 			content,
 			views_count,
-			insert_date
+			insert_date2
 		)
 		VALUES(
 			#{title},

@@ -1,0 +1,118 @@
+# Log4j 2에서는 XML 파일의 최상위 요소가 <Configuration>으로 변경. <Configuration>요소 아래에 Property, Appender, Loggers설정 등과 관련한 하위 요소를 정의
+Configuration:
+  status: INFO # log4j2.yml 설정파일이 로드될 때 발생하는 로그에 대한 레벨을 설정(DEBUG 레벨)
+  Properties: # 전역변수 정의
+    Property: # 환경에 따라 변수지정. FATAL > ERROR > WARN(x) > INFO > DEBUG > TRACE
+      - name: log.path # 로그저장위치
+        value: ../../log
+      - name: project.name # 프로젝트명
+        value: smh      
+      # 로그레벨 설정        
+      - name: log.level.console # 콘솔에 출력할 로그 레벨
+        value: INFO
+      - name: log.level.project # 디버깅용(사용자정의) 로그레벨, 콘솔에서 확인시에는 log.level.console에서 정의된 레벨 이상만 확인할 수 있음
+        value: INFO
+      - name: log.level.query # 쿼리로그레별 적용:INFO, 미적용:OFF
+        value: INFO
+        
+# 로그의 출력위치를 결정(파일, 콘솔, DB 등), SampleController에 예제        
+  Appenders:  
+# console Logging
+    Console:  
+      name: Console_Appender
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: ${log.level.console}
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        disableAnsi: false
+        pattern: "%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{${sys:PID}}{magenta} [%15.15t] %style{%-40.40C{1.}}{cyan} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+
+# File Logging  -log를 파일로 저장 (error로그를 저장하는 용도)
+    File:
+      name: Error_Appender
+      fileName: ${log.path}/${project.name}-error.log # 로그파일 저장명
+      PatternLayout:
+        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+      LevelRangeFilter:
+        minLevel: ERROR
+        maxLevel: WARN
+        onMatch: ACCEPT
+        onMismatch: DENY
+# Rolling Logging  -log를 파일로 저장 특정조건에서 rolling 처리  (전체 로그를 저장하는 용도 /하루 최대 1MB파일 10개까지 생성, 월단위로 폴더 관리)
+    RollingFile:
+      - name: Rolling_Appender
+        ignoreExceptions: false        
+        fileName: ${log.path}/${project.name}-rolling.log # 로그파일 저장명
+        filePattern: "${log.path}/archive/rolling/$${date:yyyy-MM}/${project.name}-rolling-%d{yyyy-MM-dd}-%i.gz" # 로그파일 아카이빙 이름
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+        Policies:
+          TimeBasedTriggeringPolicy: # 시간설정(60초마다 rolling)
+            interval: 60
+            modulate: true
+          SizeBasedTriggeringPolicy: # 최대용량설정 (1MB)
+            size: "1 MB"
+        DefaultRolloverStrategy: # i변수 최대값, 아카이빙 파일생성에 사용 
+          max: 10
+      # query Logging   - 쿼리데이터만 따로 저장
+      - name: Query_Appender
+        ignoreExceptions: false        
+        fileName: ${log.path}/${project.name}-query.log # 로그파일 저장명
+        filePattern: "${log.path}/archive/query/$${date:yyyy-MM}/${project.name}-query-%d{yyyy-MM-dd}-%i.gz" # 로그파일 아카이빙 이름
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 60
+            modulate: true
+          SizeBasedTriggeringPolicy: # 최대용량설정 (1MB)
+            size: "1 MB"
+        DefaultRolloverStrategy: # i변수 최대값, 아카이빙 파일생성에 사용
+          max: 10
+      # query Logging   - 쿼리데이터만 따로 저장
+      - name: Query_Appender
+        ignoreExceptions: false        
+        fileName: ${log.path}/${project.name}-query.log # 로그파일 저장명
+        filePattern: "${log.path}/archive/query/$${date:yyyy-MM}/${project.name}-query-%d{yyyy-MM-dd}-%i.gz" # 로그파일 아카이빙 이름
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 1
+            modulate: true
+          SizeBasedTriggeringPolicy: # 최대용량설정 (1MB)
+            size: "1 MB"
+        DefaultRolloverStrategy: # i변수 최대값, 아카이빙 파일생성에 사용
+          max: 10
+  Loggers:
+    Root: #최상위 logger, class 에서 로그를 출력하는데 사용된 logger가 log4j.xml 에 존재하지 않는다면, 부모 로거를 찾음 @Log4j2 어노테이션으로 사용하는 경우 root 로거가 적용됨
+      level: ${log.level.project}
+      AppenderRef:
+        - ref: Console_Appender
+        - ref: Rolling_Appender
+        - ref: Error_Appender
+    Logger: # 디버깅용 logger 정의, 추가로 정의할 수 있음
+      # 프로젝트 내에 로그는 com.project 객체 사용 
+      - name: com.project
+        additivity: false #중복로깅여부
+        level: ${log.level.project}
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: Rolling_Appender
+          - ref: Error_Appender
+#      - name: com.error
+#        additivity: false #중복로깅여부
+#        level: INFO
+#        AppenderRef:
+#          - ref: File_Appender
+# log4jdbc 설정
+      - name: jdbc.sqltiming # SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)
+        additivity: false #중복로깅여부
+        level: ${log.level.query}
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: Query_Appender
+          - ref: Rolling_Appender
+          - ref: Error_Appender

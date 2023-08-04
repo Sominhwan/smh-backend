@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-group = 'com.smh'
+group = 'kr.co.smh'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -15,6 +15,10 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+
 }
 
 repositories {
@@ -33,7 +37,15 @@ dependencies {
 	// postgre 
 	implementation 'org.postgresql:postgresql:42.6.0'
 	// log4jdbc-log4j2
-	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+	//implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+	//implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+   	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+   
+    // log4j
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'   // log4j2
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.10.3'   // log4j2
+    implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4', version: '1.16'
+
 	// mybatis 추가
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.0'
 	implementation 'org.mybatis:mybatis-spring:2.0.6'
