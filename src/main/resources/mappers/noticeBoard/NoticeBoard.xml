@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO">
+	<!-- 공지사항 글쓰기 -->
 	<insert id="noticeBoardInsert" parameterType="kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO">
 		INSERT INTO notice_board(
 			title,
 			writer,
 			content,
 			views_count,
-			insert_date2
+			like_count,
+			comment_count,
+			insert_date
 		)
 		VALUES(
 			#{title},
 			#{writer},
 			#{content},
 			0,
+			0,
+			0,
 			NOW()
 		)
 	</insert>
+	<!-- 공지사항 긂목록 -->
+	<select id="noticeBoardList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
+		SELECT notice_id, title, views_count, like_count, comment_count, writer, TO_CHAR(insert_date,'YYYY.MM.DD HH24:MI') as insert_date
+		FROM notice_board
+		ORDER BY notice_id DESC
+		OFFSET #{offset} ROWS
+		FETCH NEXT #{rowSize} ROWS ONLY;
+	</select>
+	<!-- 공지사항 전체페이지 개수 -->
+	<select id="noticeBoardTotalPage" resultType="Integer">
+	    SELECT CEIL(COUNT(*)/15.0) 
+      	FROM notice_board  
+	</select>
+	<!-- 공지사항 상세페이지 정보 -->
+	<select id="noticeBoardDetailList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
+		SELECT title, writer, content, like_count, comment_count, TO_CHAR(insert_date,'YYYY.MM.DD HH24:MI') as insert_date
+		FROM notice_board 
+		WHERE notice_id = #{id}
+	</select>
 </mapper>
