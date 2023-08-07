@@ -53,8 +53,8 @@ public class NoticeBoardService {
 						  HttpStatus.OK);
 	}	
 	
-	public HttpEntity<?> noticeBoardDetailSelect(String id){
-		List<NoticeBoardVO> noticeBoardDetailList = noticeBoardDAO.noticeBoardDetailList(Integer.parseInt(id));
+	public HttpEntity<?> noticeBoardDetailSelect(String id, String category){
+		List<NoticeBoardVO> noticeBoardDetailList = noticeBoardDAO.noticeBoardDetailList(Integer.parseInt(id), category);
 
 		return new ResponseEntity<>(
 					ResDTO.builder()

@@ -23,20 +23,20 @@ public class NoticeBoardController {
 	private final NoticeBoardService noticeBoardService;
 	
 	@PostMapping(value="/write")
-	public HttpEntity<?> noticeBoardWrite(@RequestBody @Nullable NoticeBoardDTO.ReqNoticeBoard reqDTO) {
+	public HttpEntity<?> noticeBoardWrite(@Nullable @RequestBody NoticeBoardDTO.ReqNoticeBoard reqDTO) {
 		log.info("noticeBoardWrite --> " + reqDTO);
 		return noticeBoardService.noticeBoardWrite(reqDTO);			
 	}
 	
 	@GetMapping(value="/select")
-	public HttpEntity<?> noticeBoardList(@RequestParam("page") @Nullable String page) {
+	public HttpEntity<?> noticeBoardList(@Nullable @RequestParam("page") String page) {
 		log.info("noticeBoardList --> " + page);
 		return noticeBoardService.noticeBoardSelect(page);
 	}
 	
 	@GetMapping(value="/detail/select")
-	public HttpEntity<?> noticeBoardDetailList(@RequestParam("id") @Nullable String id) {
-		log.info("noticeBoardDetailList --> " + id);
-		return noticeBoardService.noticeBoardDetailSelect(id);
+	public HttpEntity<?> noticeBoardDetailList(@Nullable @RequestParam("id") String id, @Nullable @RequestParam("category") String category) {
+		log.info("noticeBoardDetailList --> id: " + id);
+		return noticeBoardService.noticeBoardDetailSelect(id, category);
 	}
 }
