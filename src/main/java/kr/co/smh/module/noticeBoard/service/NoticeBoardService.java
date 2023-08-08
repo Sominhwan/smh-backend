@@ -31,14 +31,14 @@ public class NoticeBoardService {
 						  HttpStatus.OK);
 	}	
 	
-	public HttpEntity<?> noticeBoardSelect(String page){
+	public HttpEntity<?> noticeBoardSelect(String page, String category){
 		if(page == null) page = "1";
 		int currentPage = Integer.parseInt(page);
 		int rowSize = 15;
 		int offset = (currentPage - 1) * rowSize;
 		
 		Map<String, Object> map = new HashMap<>();
-		List<NoticeBoardVO> noticeBoardList = noticeBoardDAO.noticeBoardList(offset, rowSize);
+		List<NoticeBoardVO> noticeBoardList = noticeBoardDAO.noticeBoardList(offset, rowSize, category);
 		Integer totalPage = noticeBoardDAO.noticeBoardTotalPage();
 		
 		map.put("noticeBoardList", noticeBoardList);

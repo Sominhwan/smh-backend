@@ -29,9 +29,9 @@ public class NoticeBoardController {
 	}
 	
 	@GetMapping(value="/select")
-	public HttpEntity<?> noticeBoardList(@Nullable @RequestParam("page") String page) {
-		log.info("noticeBoardList --> " + page);
-		return noticeBoardService.noticeBoardSelect(page);
+	public HttpEntity<?> noticeBoardList(@Nullable @RequestParam("page") String page, @Nullable @RequestParam("category") String category) {
+		log.info("noticeBoardList --> page: " + page + " category: " + category);
+		return noticeBoardService.noticeBoardSelect(page, category);
 	}
 	
 	@GetMapping(value="/detail/select")

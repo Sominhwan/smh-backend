@@ -26,7 +26,15 @@
 	<select id="noticeBoardList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
 		SELECT notice_id, title, views_count, like_count, comment_count, writer, TO_CHAR(insert_date,'YYYY.MM.DD HH24:MI') as insert_date
 		FROM notice_board
+		<if test='category == "최신글순"'>
 		ORDER BY notice_id DESC
+		</if>
+		<if test='category == "많은댓글순"'>
+		ORDER BY comment_count DESC
+		</if>
+		<if test='category == "좋아요순"'>
+		ORDER BY like_count DESC
+		</if>
 		OFFSET #{offset} ROWS
 		FETCH NEXT #{rowSize} ROWS ONLY;
 	</select>
