@@ -1,4 +1,4 @@
-package kr.co.smh.module.noticeBoard.dto;
+package kr.co.smh.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
-import kr.co.smh.module.noticeBoard.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
 import lombok.RequiredArgsConstructor;
 
