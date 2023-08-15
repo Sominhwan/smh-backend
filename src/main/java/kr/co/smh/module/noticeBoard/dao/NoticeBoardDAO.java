@@ -18,5 +18,7 @@ public interface NoticeBoardDAO {
 	// 공지사항 전체글 개수
 	Integer noticeBoardTotalPage();
 	// 공지사항 상세보기 정보 가져오기
-	List<NoticeBoardVO> noticeBoardDetailList(@Param("id") int id, @Param("category") String cateogory);	
+	List<NoticeBoardVO> noticeBoardDetail(@Param("id") int id);	
+	// 공지사항 상세보기 공지사항 리스트
+	List<NoticeBoardVO> noticeBoardDetailList(@Param("id") int id);
 }

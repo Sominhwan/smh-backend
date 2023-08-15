@@ -44,11 +44,9 @@
       	FROM notice_board  
 	</select>
 	<!-- 공지사항 상세페이지 정보 -->
-	<select id="noticeBoardDetailList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
+	<select id="noticeBoardDetail" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
 		SELECT title, writer, content, like_count, comment_count, TO_CHAR(insert_date,'YYYY.MM.DD HH24:MI') as insert_date
-		<if test='category == "1"'>
 		FROM notice_board 
-		</if> 
 		WHERE notice_id = #{id}
 	</select>
 </mapper>
