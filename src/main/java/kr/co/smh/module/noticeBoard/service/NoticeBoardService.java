@@ -1,6 +1,8 @@
 package kr.co.smh.module.noticeBoard.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +36,7 @@ public class NoticeBoardService {
 	// 공지사항 전체페이지 수 
 	public HttpEntity<?> noticeBoardPage(){	
 		Integer totalPage = noticeBoardDAO.noticeBoardTotalPage();
-		log.info("totalPage --> " + totalPage);
+		log.info("NoticetotalPage --> " + totalPage);
 		
 		return new ResponseEntity<>(
 					ResDTO.builder()
@@ -51,14 +53,20 @@ public class NoticeBoardService {
 		int rowSize = 15;
 		int offset = (currentPage - 1) * rowSize;
 		
+		Map<String, Object> map = new HashMap<String, Object>();
+		Integer totalPage = noticeBoardDAO.noticeBoardTotalPage();
 		List<NoticeBoardVO> noticeBoardList = noticeBoardDAO.noticeBoardList(offset, rowSize, category);
-		log.info("noticeBoardList --> " + noticeBoardList);
+		
+		map.put("totalPage", totalPage);
+		map.put("noticeBoardList", noticeBoardList);
+		
+		log.info("noticeBoardList --> " + map);
 		
 		return new ResponseEntity<>(
 					ResDTO.builder()
 						  .code(0)
 						  .message("공지사항 목록을 가져왔습니다.")
-						  .data(noticeBoardList)
+						  .data(map)
 						  .build(),
 						  HttpStatus.OK);
 	}	

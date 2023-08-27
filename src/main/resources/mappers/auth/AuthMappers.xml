@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smh.module.auth.dao.AuthDAO">
+	<!-- 회원가입 -->
+	<insert id="insertUser">
+		INSERT INTO user_info(
+			email,
+			password,
+			korea_name,
+			foreigner_name,
+			birth_date,
+			gender,
+			foreigner_status,
+			phone_num,
+			mobile_carrier,
+			private_info_terms,
+			unique_identify_terms,
+			mobile_carrier_terms,
+			role,
+			insert_at
+		)
+		VALUES(
+			#{email},
+			#{password},
+			#{koreaName},
+			#{foreignerName},
+			#{birthDate},
+			#{gender},
+			#{foreignerStatus},
+			#{phoneNum},
+			#{mobileCarrier},
+			#{privateInfoTerms},
+			#{uniqueIdentifyTerms},
+			#{mobileCarrierTerms},
+			'USER',
+			NOW()
+		)
+	</insert>
+</mapper>
