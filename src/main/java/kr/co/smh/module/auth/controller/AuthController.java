@@ -24,6 +24,12 @@ public class AuthController {
 	@PostMapping(value="/join")
 	public HttpEntity<?> authJoin(@Nullable @RequestBody AuthVO vo) {
 		log.info("authJoin --> " + vo);	
-		return authService.signup(vo);
+		return authService.signUp(vo);
+	}
+	// 로그인
+	@PostMapping(value="/login")
+	public HttpEntity<?> authLogin(@Nullable @RequestBody AuthVO vo) {
+		log.info("authLogin --> " + vo);	
+		return authService.signIn(vo);
 	}
 }

@@ -17,7 +17,7 @@
 			unique_identify_terms,
 			mobile_carrier_terms,
 			role,
-			insert_at
+			create_at
 		)
 		VALUES(
 			#{email},
@@ -36,4 +36,9 @@
 			NOW()
 		)
 	</insert>
+	<select id="findByAccount" resultType="kr.co.smh.module.auth.model.AuthVO">
+		SELECT email, role
+		FROM user_info 
+		WHERE email = #{email}
+	</select>
 </mapper>
