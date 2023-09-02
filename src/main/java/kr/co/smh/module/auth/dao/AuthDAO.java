@@ -1,6 +1,7 @@
 package kr.co.smh.module.auth.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,5 @@ public interface AuthDAO {
     AuthVO getUserById(int id);
     void updateUser(AuthVO userVo); // 회원 정보 수정
     void deleteUser(int id); // 회원 탈퇴
+    Optional<AuthVO> findByUserId(String userEmail);
 }

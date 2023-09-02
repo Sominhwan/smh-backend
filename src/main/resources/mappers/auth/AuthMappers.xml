@@ -36,9 +36,9 @@
 			NOW()
 		)
 	</insert>
-	<select id="findByAccount" resultType="kr.co.smh.module.auth.model.AuthVO">
-		SELECT email, role
+	<select id="findByUserId" resultType="kr.co.smh.module.auth.model.AuthVO">
+		SELECT email, password, role 
 		FROM user_info 
 		WHERE email = #{email}
-	</select>
+	</select> 
 </mapper>

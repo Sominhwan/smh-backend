@@ -2,32 +2,24 @@ package kr.co.smh.config.security;
 
 import java.util.List;
 
-import javax.servlet.DispatcherType;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import kr.co.smh.module.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
-@PropertySource("classpath:jwt.yml")
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	//private final JwtAuthenticationFilter jwtAuthenticationFilter;
     // 스프링 시큐리티 기능 비활성화
 //    @Bean
 //    public WebSecurityCustomizer configure() {
@@ -48,7 +40,7 @@ public class SecurityConfig {
             .sessionManagement()        // 세션 관리 기능을 작동한다.      .maximunSessions(숫자)로 최대 허용가능 세션 수를 정할수 있다.(-1로 하면 무제한 허용)
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt사용하는 경우 씀(STATELESS는 인증 정보를 서버에 담지 않는다.)
             .and()
-            .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
+            //.addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
             //UserNamePasswordAuthenticationFilter적용하기 전에 JWTTokenFilter를 적용 하라는 뜻 입니다.
             .build();
 }

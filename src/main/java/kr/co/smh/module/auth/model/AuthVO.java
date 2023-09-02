@@ -28,4 +28,10 @@ public class AuthVO {
 	private String role; // 권한
 	private String createAt; // 가입시간
 	private String updateAt; // 수정시간
+	private String refreshToken;
+	
+    //refreshToken 갱신
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

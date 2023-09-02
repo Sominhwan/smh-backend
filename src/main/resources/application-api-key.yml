@@ -1,0 +1,7 @@
+jwt:
+  secretKey : leebeomjunleebeomjunleebeomjunleebeomjunleebeomjunleebeomjun
+  accessToken-valid-seconds : 600
+  refreshToken-valid-seconds : 86400
+  
+weather:
+  secretKey: 8f3f7b217f784989c575f5f9e6a7b37b

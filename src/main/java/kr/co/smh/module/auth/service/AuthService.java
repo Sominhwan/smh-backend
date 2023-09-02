@@ -1,33 +1,37 @@
 package kr.co.smh.module.auth.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
+import kr.co.smh.common.dto.LoginDTO;
 import kr.co.smh.common.dto.ResDTO;
-import kr.co.smh.config.security.JwtTokenUtil;
-import kr.co.smh.config.security.service.TokenProvider;
+import kr.co.smh.config.security.JwtProvider;
 import kr.co.smh.module.auth.dao.AuthDAO;
 import kr.co.smh.module.auth.model.AuthVO;
 import lombok.RequiredArgsConstructor;
 
-@PropertySource("classpath:jwt.yml")
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 	private final AuthDAO authDAO;
-	private final TokenProvider tokenProvider;
+	private static final Logger log = LogManager.getLogger("kr.co.smh");
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private long expireTimeMs = 1000*60*60;
-    @Value("${secret-key}")
+    //private final JwtProvider jwtProvider;
+    //private final AuthenticationManager authenticationManager;
+    
+    @Value("${jwt.secretKey}")
     private String secretkey; 
     public List<AuthVO> getUserList() {
         return authDAO.getUserList();
@@ -41,22 +45,31 @@ public class AuthService {
         return authDAO.getUserByEmail(email);
     }
     // 로그인
-    public HttpEntity<?> signIn(AuthVO authVO) {
-    	AuthVO vo = authDAO.findByAccount(authVO.getEmail());
-    	System.out.println(vo.getRole());
-    	System.out.println(vo.getEmail());
-    	//String token = tokenProvider.accessToken(String.format("%s:%s", vo.getEmail(), vo.getRole()));
-    	System.out.println(secretkey);
-    	String token = JwtTokenUtil.createToken(vo.getEmail(), expireTimeMs, secretkey);
-    	String name = JwtTokenUtil.getUserName(token, secretkey);
-    	System.out.println("이름:" + name);
-		return new ResponseEntity<>(
-				ResDTO.builder()
-					  .code(0)
-					  .data(token)
-					  .message("로그인 완료.")
-					  .build(),
-					  HttpStatus.OK);  
+    public ResponseEntity<?> signIn(AuthVO authVO) {
+    	System.out.println(authVO.getEmail());
+        //UsernamePasswordAuthenticationToken authenticationToken =
+                //new UsernamePasswordAuthenticationToken(authVO.getEmail(), authVO.getPassword());
+        
+        //아이디 체크는 Authentication 에 사용자 입력 아이디, 비번을 넣어줘야지 작동
+        //Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        //log.info(authentication + " 로그인 처리 authentication");
+        
+        //jwt accessToken & refreshToken 발급
+        //String accessToken = jwtProvider.generateToken(authentication, false);
+        //String refreshToken = jwtProvider.generateToken(authentication, true);
+        
+        //회원 DB에 refreshToken 저장 // TODO 이후에 추가
+        //memberService.findMemberAndSaveRefreshToken(authentication.getName(), refreshToken);
+        LoginDTO loginDTO = LoginDTO.builder()
+                .status(HttpStatus.OK.value())
+                .message("로그인 성공")
+                //.accessToken(accessToken)
+                //.expiredAt(LocalDateTime.now().plusSeconds(jwtProvider.getAccessTokenValidMilliSeconds()/1000))
+                //.refreshToken(refreshToken)
+                //.issuedAt(LocalDateTime.now())
+                .build();
+        
+        return ResponseEntity.ok(loginDTO);  
     }
     // 회원 가입
     public HttpEntity<?> signUp(AuthVO authVO) { 
