@@ -37,7 +37,7 @@
 		)
 	</insert>
 	<select id="findByUserId" resultType="kr.co.smh.module.auth.model.AuthVO">
-		SELECT email, password, role 
+		SELECT email, password, role as authorities
 		FROM user_info 
 		WHERE email = #{email}
 	</select> 

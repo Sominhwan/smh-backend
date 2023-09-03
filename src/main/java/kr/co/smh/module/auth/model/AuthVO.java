@@ -1,5 +1,8 @@
 package kr.co.smh.module.auth.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,9 +32,20 @@ public class AuthVO {
 	private String createAt; // 가입시간
 	private String updateAt; // 수정시간
 	private String refreshToken;
-	
+	private String authorities;
     //refreshToken 갱신
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+    
+    public Set<Authority> parseAuthorities() {
+        Set<Authority> authoritySet = new HashSet<>();
+        if (authorities != null && !authorities.isEmpty()) {
+            String[] authorityArray = authorities.split(",");
+            for (String authority : authorityArray) {
+                authoritySet.add(new Authority(authority.trim()));
+            }
+        }
+        return authoritySet;
     }
 }

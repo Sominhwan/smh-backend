@@ -4,93 +4,53 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.filter.GenericFilterBean;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import kr.co.smh.common.dto.ResponseDTO;
-import kr.co.smh.exception.ExpiredJwtException;
-import kr.co.smh.exception.TokenNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter extends GenericFilterBean {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    private final JwtProvider tokenProvider;
 
-    private final Logger log = LoggerFactory.getLogger(JwtFilter.class);
-    private final JwtProvider jwtProvider;
-    private final ObjectMapper objectMapper;
-
+    // 실제 필터릴 로직
+    // 토큰의 인증정보를 SecurityContext에 저장하는 역할 수행
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            String token = resolveToken(request);
-            log.info(token + " 추출 완료");
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+        String jwt = resolveToken(httpServletRequest);
+        String requestURI = httpServletRequest.getRequestURI();
 
-            if (!StringUtils.hasText(token)) {
-                log.info("jwt 토큰을 찾을수 없습니다");
-                throw new TokenNotFoundException("토큰을 찾을 수 없습니다");
-            }
-            //jwt 에서 추출된 데이터가 들어있는 Authentication
-            Authentication authentication = jwtProvider.getAuthentication(token);
-            log.info(authentication + " Authentication 생성");
-
-            //SecurityContextHolder 에 Authentication 를 세팅하기 때문에 @PreAuthorize 로 권한 파악가능
+        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            filterChain.doFilter(request, response);
-
-        } catch (TokenNotFoundException e) {
-            sendErrorResponse(response, "토큰을 찾을 수 없습니다");
-        } catch (MalformedJwtException e) {
-            sendErrorResponse(response, "손상된 토큰입니다");
-        } catch (ExpiredJwtException e) {
-            sendErrorResponse(response, "만료된 토큰입니다");
-        } catch (UnsupportedJwtException e) {
-            sendErrorResponse(response, "지원하지 않는 토큰입니다");
-        } catch (SignatureException e) {
-            sendErrorResponse(response, "시그니처 검증에 실패한 토큰입니다");
+            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+        } else {
+            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    /**
-     * 헤더 token 추출
-     * @param request HttpServletRequest
-     * @return 헤더 토큰 추출 값
-     */
+    // Request Header 에서 토큰 정보를 꺼내오기 위한 메소드
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
-            return bearerToken.substring(7);
-        return null;
-    }
 
-    /**
-     * jwt 예외처리 응답
-     * @param response HttpServletResponse
-     * @param message 응답 메세지
-     * @throws IOException
-     */
-    private void sendErrorResponse(HttpServletResponse response, String message) throws IOException {
-        response.setCharacterEncoding("utf-8");
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(objectMapper.writeValueAsString(ResponseDTO.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .message(message)
-                .build()));
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+
+        return null;
     }
 }
