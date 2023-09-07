@@ -1,7 +1,13 @@
 package kr.co.smh.module.auth.model;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +38,10 @@ public class AuthVO {
 	private String createAt; // 가입시간
 	private String updateAt; // 수정시간
 	private String refreshToken;
+	private boolean activated;
+	//private String authorities;
 	private String authorities;
+	//private Set<Authority> authorities;
     //refreshToken 갱신
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
@@ -48,4 +57,6 @@ public class AuthVO {
         }
         return authoritySet;
     }
+    
+
 }

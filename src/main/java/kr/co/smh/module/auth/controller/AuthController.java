@@ -5,11 +5,16 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.smh.common.dto.TokenInfo;
 import kr.co.smh.module.auth.model.AuthVO;
 import kr.co.smh.module.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +34,9 @@ public class AuthController {
 	}
 	// 로그인
 	@PostMapping(value="/login")
-	public ResponseEntity<?> authLogin(@Nullable @RequestBody AuthVO vo) {
+	public ResponseEntity<TokenInfo> authLogin(@Nullable @RequestBody AuthVO vo) {
 		log.info("authLogin --> " + vo);	
-		return authService.signIn(vo);
+	    TokenInfo token = authService.login(vo);
+	    return ResponseEntity.ok(token);
 	}
 }
