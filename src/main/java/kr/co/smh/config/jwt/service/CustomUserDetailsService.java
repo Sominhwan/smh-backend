@@ -1,6 +1,5 @@
 package kr.co.smh.config.jwt.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,31 +26,24 @@ public class CustomUserDetailsService implements UserDetailsService {
 
    @Override
    @Transactional
-   public UserDetails loadUserByUsername(final String username) {
+   public UserDetails loadUserByUsername(final String username) {   
 	   User user =  userDAO.findOneWithAuthoritiesByUsername(username);
+	   user.setAuthorities(userDAO.findOneWithAuthorityName(user.getUserId()));
+   	
 	   if(user == null) {
 		   throw new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다.");
 	   }
       return createUser(username, user);
-
    }
 
    private org.springframework.security.core.userdetails.User createUser(String username, User user) {
 //      if (!user.isActivated()) {
 //         throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
 //      }
-	   System.out.println(user.getUsername());
-	   System.out.println(user.getPassword());
 
-	   System.out.println(user.getAuthorities());
-
-
-      List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-      grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-      grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-//      List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
-//              .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
-//              .collect(Collectors.toList());
+      List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
+              .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+              .collect(Collectors.toList());
       log.info(grantedAuthorities);
       return new org.springframework.security.core.userdetails.User(user.getUsername(),
               user.getPassword(),
