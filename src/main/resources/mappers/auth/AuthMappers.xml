@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.co.smh.module.auth.dao.AuthDAO">
+<mapper namespace="kr.co.smh.config.jwt.dao.UserDAO">
 	<!-- 회원가입 -->
 	<insert id="insertUser">
 		INSERT INTO user_info(
@@ -16,7 +16,6 @@
 			private_info_terms,
 			unique_identify_terms,
 			mobile_carrier_terms,
-			role,
 			create_at
 		)
 		VALUES(
@@ -32,13 +31,27 @@
 			#{privateInfoTerms},
 			#{uniqueIdentifyTerms},
 			#{mobileCarrierTerms},
-			'USER',
 			NOW()
 		)
 	</insert>
-	<select id="findByUserId" resultType="kr.co.smh.module.auth.model.AuthVO">
-		SELECT email, password, role as authorities
-		FROM user_info 
-		WHERE email = #{username}
+	<insert id="insertUserAuthority">
+		INSERT INTO user_authority (user_id, authority_name)
+		VALUES (
+		    (SELECT user_id 
+		     FROM user_info 
+		     WHERE email = #{email}), 
+		    #{authorityName}
+		)		
+	</insert>
+	<!-- 유저정보 가져오기 -->
+	<select id="findOneWithAuthoritiesByUsername" resultType="kr.co.smh.config.jwt.model.User">
+		SELECT user_id, email as username, password
+		FROM user_info
+		WHERE email = #{email}
 	</select> 
+	<select id="findOneWithAuthorityName" resultType="kr.co.smh.config.jwt.model.Authority">
+		select authority_name
+		from user_authority 
+		where user_id = #{userId}
+	</select> 	
 </mapper>
