@@ -31,9 +31,7 @@ public class User {
 	private String role; // 권한
 	private String createAt; // 가입시간
 	private String updateAt; // 수정시간
-	private boolean activated;
-	private String authoritiy;
-
+	private boolean activated; 
 
     private Set<Authority> authorities;
 }

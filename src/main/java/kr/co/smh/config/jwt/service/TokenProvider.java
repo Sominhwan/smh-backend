@@ -28,7 +28,6 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class TokenProvider implements InitializingBean {
-
    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
    private static final String AUTHORITIES_KEY = "auth";
    private final String secret;
@@ -39,7 +38,7 @@ public class TokenProvider implements InitializingBean {
       @Value("${jwt.secretKey}") String secret,
       @Value("${jwt.accessToken-valid-seconds}") long tokenValidityInSeconds) {
       this.secret = secret;
-      this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+      this.tokenValidityInMilliseconds = tokenValidityInSeconds * 3000;
    }
 
    @Override

@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -20,7 +19,6 @@ import kr.co.smh.config.jwt.handler.JwtAccessDeniedHandler;
 import kr.co.smh.config.jwt.handler.JwtAuthenticationEntryPoint;
 import kr.co.smh.config.jwt.service.TokenProvider;
 import lombok.RequiredArgsConstructor;
-
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -59,8 +57,6 @@ public class SecurityConfig {
                 .apply(new JwtSecurityConfig(tokenProvider));
 
                 
-
-
         return httpSecurity.build();
     }
     
