@@ -1,10 +1,13 @@
 package kr.co.smh.config.jwt.service;
 
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,20 +28,22 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class TokenProvider implements InitializingBean {
    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
    private static final String AUTHORITIES_KEY = "auth";
    private final String secret;
-   private final long tokenValidityInMilliseconds;
+   private final long accessTokenValidityInMilliseconds;
+   private final long refreshTokenValidityInMilliseconds;
    private Key key;
 
-   public TokenProvider(
-      @Value("${jwt.secretKey}") String secret,
-      @Value("${jwt.accessToken-valid-seconds}") long tokenValidityInSeconds) {
+   public TokenProvider(@Value("${jwt.secretKey}") String secret, @Value("${jwt.accessToken-valid-seconds}") long accessTokenValidityInSeconds, 
+		   @Value("${jwt.refreshToken-valid-seconds}") long refreshTokenValidityInSeconds) {
       this.secret = secret;
-      this.tokenValidityInMilliseconds = tokenValidityInSeconds * 3000;
+      this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 3000;
+      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds;
    }
 
    @Override
@@ -46,14 +51,14 @@ public class TokenProvider implements InitializingBean {
       byte[] keyBytes = Decoders.BASE64.decode(secret);
       this.key = Keys.hmacShaKeyFor(keyBytes);
    }
-
-   public String createToken(Authentication authentication) {
+   // Access Token 발급
+   public String createAccessToken(Authentication authentication) {
       String authorities = authentication.getAuthorities().stream()
          .map(GrantedAuthority::getAuthority)
          .collect(Collectors.joining(","));
 
       long now = (new Date()).getTime();
-      Date validity = new Date(now + this.tokenValidityInMilliseconds);
+      Date validity = new Date(now + this.accessTokenValidityInMilliseconds);
 
       return Jwts.builder()
          .setSubject(authentication.getName())
@@ -62,7 +67,28 @@ public class TokenProvider implements InitializingBean {
          .setExpiration(validity)
          .compact();
    }
-
+   // Refresh Token 발급
+   public String createRefreshToken(Authentication authentication) {
+       long now = (new Date()).getTime();
+       Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
+       
+       return Jwts.builder()
+               .setSubject(authentication.getName())
+               .setExpiration(validity)
+               .signWith(key, SignatureAlgorithm.HS512)
+               .compact();
+   }  
+   // Refresh Token Cookie 생성
+   public Cookie createCookie(Authentication authentication) {
+       String cookieName = "refreshtoken";
+       String cookieValue = createRefreshToken(authentication);
+       var RTcookie = URLEncoder.encode(cookieValue, UTF_8);
+       Cookie cookie = new Cookie  (cookieName, RTcookie);
+       cookie.setHttpOnly(true);
+       cookie.setPath("/");
+       cookie.setMaxAge(24 * 60 * 60);
+       return cookie;
+   }
    public Authentication getAuthentication(String token) {
       Claims claims = Jwts
               .parserBuilder()
@@ -80,7 +106,7 @@ public class TokenProvider implements InitializingBean {
 
       return new UsernamePasswordAuthenticationToken(principal, token, authorities);
    }
-
+   // 토큰 검증
    public boolean validateToken(String token) {
       try {
          Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

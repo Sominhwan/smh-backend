@@ -1,6 +1,9 @@
 package kr.co.smh.config.jwt.service;
 
+import java.net.HttpCookie;
 import java.util.Collections;
+
+import javax.servlet.http.Cookie;
 
 import org.apache.ibatis.javassist.bytecode.DuplicateMemberException;
 import org.apache.logging.log4j.LogManager;
@@ -71,13 +74,15 @@ public class UserService {
 		
 	    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        String jwt = tokenProvider.createToken(authentication);
+        Cookie cookie = tokenProvider.createCookie(authentication);
+        String refreshToken = cookie.getValue();
+        String acessToken = tokenProvider.createAccessToken(authentication);
+        log.info("리플레쉬 토큰 --> " + refreshToken);
         
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        
-	    return new ResponseEntity<>(new TokenDTO(jwt), httpHeaders, HttpStatus.OK);    	
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + acessToken);
+   
+	    return new ResponseEntity<>(new TokenDTO(acessToken), httpHeaders, HttpStatus.OK);    	
     }
     // 유저 정보
     @Transactional(readOnly = true)
