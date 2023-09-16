@@ -3,6 +3,7 @@ package kr.co.smh.config.security;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,6 +28,7 @@ public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
     
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -54,7 +56,7 @@ public class SecurityConfig {
                 //.anyRequest().authenticated()
         
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider));
+                .apply(new JwtSecurityConfig(tokenProvider, authenticationManagerBuilder));
 
                 
         return httpSecurity.build();

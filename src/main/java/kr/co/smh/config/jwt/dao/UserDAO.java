@@ -20,4 +20,8 @@ public interface UserDAO {
     User findOneWithAuthoritiesByUsername(String email);
     // 권한 정보 가져오기
     Set<Authority> findOneWithAuthorityName(int userId);
+    // refresh token 저장
+    void insertRefreshToken(@Param("email")String email, @Param("refreshToken")String refreshToken);
+    // refresh token 비교
+    String getRefreshToken(String email);
 }

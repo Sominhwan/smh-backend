@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -28,6 +29,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import kr.co.smh.config.jwt.dao.UserDAO;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
@@ -38,12 +40,16 @@ public class TokenProvider implements InitializingBean {
    private final long accessTokenValidityInMilliseconds;
    private final long refreshTokenValidityInMilliseconds;
    private Key key;
+   private UserDAO userDAO;
+   private CustomUserDetailsService customUserDetailsService;
 
    public TokenProvider(@Value("${jwt.secretKey}") String secret, @Value("${jwt.accessToken-valid-seconds}") long accessTokenValidityInSeconds, 
-		   @Value("${jwt.refreshToken-valid-seconds}") long refreshTokenValidityInSeconds) {
+		   @Value("${jwt.refreshToken-valid-seconds}") long refreshTokenValidityInSeconds, UserDAO userDAO, CustomUserDetailsService customUserDetailsService) {
       this.secret = secret;
       this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 3000;
       this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds;
+      this.userDAO = userDAO;
+      this.customUserDetailsService = customUserDetailsService;
    }
 
    @Override
@@ -56,13 +62,14 @@ public class TokenProvider implements InitializingBean {
       String authorities = authentication.getAuthorities().stream()
          .map(GrantedAuthority::getAuthority)
          .collect(Collectors.joining(","));
-
       long now = (new Date()).getTime();
-      Date validity = new Date(now + this.accessTokenValidityInMilliseconds);
-
+      
+      Date validity = new Date(System.currentTimeMillis() + this.accessTokenValidityInMilliseconds);
+      Date date = new Date();
       return Jwts.builder()
          .setSubject(authentication.getName())
          .claim(AUTHORITIES_KEY, authorities)
+         .setIssuedAt(date)
          .signWith(key, SignatureAlgorithm.HS512)
          .setExpiration(validity)
          .compact();
@@ -70,11 +77,12 @@ public class TokenProvider implements InitializingBean {
    // Refresh Token 발급
    public String createRefreshToken(Authentication authentication) {
        long now = (new Date()).getTime();
-       Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
-       
+       Date validity = new Date(System.currentTimeMillis() + this.refreshTokenValidityInMilliseconds);
+       Date date = new Date();
        return Jwts.builder()
                .setSubject(authentication.getName())
                .setExpiration(validity)
+               .setIssuedAt(date)
                .signWith(key, SignatureAlgorithm.HS512)
                .compact();
    }  
@@ -83,7 +91,7 @@ public class TokenProvider implements InitializingBean {
        String cookieName = "refreshtoken";
        String cookieValue = createRefreshToken(authentication);
        var RTcookie = URLEncoder.encode(cookieValue, UTF_8);
-       Cookie cookie = new Cookie  (cookieName, RTcookie);
+       Cookie cookie = new Cookie(cookieName, RTcookie);
        cookie.setHttpOnly(true);
        cookie.setPath("/");
        cookie.setMaxAge(24 * 60 * 60);
@@ -121,5 +129,21 @@ public class TokenProvider implements InitializingBean {
          logger.info("JWT 토큰이 잘못되었습니다.");
       }
       return false;
+   }
+   public Claims getUserInfoFromToken(String token) {
+       return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+   }
+   // DB에서 refresh token 가져옴
+   public boolean getRefreshTokenIsTrue(String email, String refreshToken) {
+       return userDAO.getRefreshToken(email).equals(refreshToken);
+   }
+   // 유저 정보
+   public kr.co.smh.config.jwt.model.User getUserDetail(String email){
+	   return userDAO.findOneWithAuthoritiesByUsername(email);
+   }
+   public Authentication createAuthentication(String email) {
+       UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+       System.out.println("권한 -->" + userDetails.getAuthorities());
+       return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
    }
 }

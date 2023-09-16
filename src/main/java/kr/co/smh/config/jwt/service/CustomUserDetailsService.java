@@ -30,13 +30,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 	   User user =  userDAO.findOneWithAuthoritiesByUsername(username);
 	   user.setAuthorities(userDAO.findOneWithAuthorityName(user.getUserId()));
    	
-	   if(user == null) {
-		   throw new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다.");
-	   }
-      return createUser(username, user);
+       return createUser(username, user);
    }
 
    private org.springframework.security.core.userdetails.User createUser(String username, User user) {
+//      TODO 이후에 회원 활성, 비활성 여부 추가 시 검사
 //      if (!user.isActivated()) {
 //         throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
 //      }

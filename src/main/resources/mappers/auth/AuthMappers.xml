@@ -43,6 +43,15 @@
 		    #{authorityName}
 		)		
 	</insert>
+	<insert id="insertRefreshToken">
+		INSERT INTO user_token (user_id, refresh_token) 
+		VALUES ( 
+			(SELECT user_id 
+			 FROM user_info
+			 WHERE email = #{email}),
+			#{refreshToken}
+		)	
+	</insert>
 	<!-- 유저정보 가져오기 -->
 	<select id="findOneWithAuthoritiesByUsername" resultType="kr.co.smh.config.jwt.model.User">
 		SELECT user_id, email as username, password
@@ -54,4 +63,11 @@
 		from user_authority 
 		where user_id = #{userId}
 	</select> 	
+	<!-- refresh Token 가져오기 -->
+	<select id="getRefreshToken" resultType="String">
+		SELECT ut.refresh_token 
+		FROM user_token ut 
+		LEFT JOIN user_info ui ON ui.user_id  = ut.user_id 
+		WHERE ui.email = #{email}	
+	</select>
 </mapper>

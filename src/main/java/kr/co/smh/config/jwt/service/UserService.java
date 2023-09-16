@@ -1,11 +1,10 @@
 package kr.co.smh.config.jwt.service;
 
-import java.net.HttpCookie;
 import java.util.Collections;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
-import org.apache.ibatis.javassist.bytecode.DuplicateMemberException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
@@ -69,16 +68,20 @@ public class UserService {
 						  HttpStatus.OK);   	  
     }
     // 로그인
-    public ResponseEntity<TokenDTO> authLogin(LoginDTO loginDTO) {
+    public ResponseEntity<TokenDTO> authLogin(LoginDTO loginDTO, HttpServletResponse response) {
 	    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
-		
 	    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        Cookie cookie = tokenProvider.createCookie(authentication);
-        String refreshToken = cookie.getValue();
+        //SecurityContextHolder.getContext().setAuthentication(authentication);
+	    if(loginDTO.isAutoLogin()) {
+	        Cookie cookie = tokenProvider.createCookie(authentication);
+	        String refreshToken = cookie.getValue();
+	        response.addCookie(cookie);
+	        userDAO.insertRefreshToken(loginDTO.getEmail(), refreshToken);
+	        log.info("리플레쉬 토큰 --> " + refreshToken);
+	    }
+
         String acessToken = tokenProvider.createAccessToken(authentication);
-        log.info("리플레쉬 토큰 --> " + refreshToken);
-        
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + acessToken);
    

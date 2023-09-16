@@ -2,6 +2,7 @@ package kr.co.smh.config.jwt.controller;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,9 +39,9 @@ public class AuthController {
 	}
 	// 로그인
 	@PostMapping(value="/login")
-	public ResponseEntity<TokenDTO> authLogin(@Nullable @RequestBody LoginDTO loginDTO) {
+	public ResponseEntity<TokenDTO> authLogin(@Nullable @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
 		log.info("authLogin --> " + loginDTO);
-		return userService.authLogin(loginDTO);
+		return userService.authLogin(loginDTO, response);
 	}
 	// 유저 정보
     @GetMapping("/user")
