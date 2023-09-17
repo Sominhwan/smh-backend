@@ -72,25 +72,27 @@ public class UserService {
 	    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 	    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         //SecurityContextHolder.getContext().setAuthentication(authentication);
+	    log.info("자동 로그인 여부 -->" + loginDTO.isAutoLogin());
+	    String refreshToken = "";
 	    if(loginDTO.isAutoLogin()) {
 	        Cookie cookie = tokenProvider.createCookie(authentication);
-	        String refreshToken = cookie.getValue();
+	        refreshToken = cookie.getValue();
 	        response.addCookie(cookie);
 	        userDAO.insertRefreshToken(loginDTO.getEmail(), refreshToken);
 	        log.info("리플레쉬 토큰 --> " + refreshToken);
 	    }
 
-        String acessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = tokenProvider.createAccessToken(authentication);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + acessToken);
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
    
-	    return new ResponseEntity<>(new TokenDTO(acessToken), httpHeaders, HttpStatus.OK);    	
+	    return new ResponseEntity<>(new TokenDTO(accessToken, refreshToken), httpHeaders, HttpStatus.OK);    	
     }
     // 유저 정보
     @Transactional(readOnly = true)
     public User getMyUserWithAuthorities() {
-    	 String username = SecurityUtil.getCurrentUsername();
+    	String username = SecurityUtil.getCurrentUsername();
         return userDAO.findOneWithAuthoritiesByUsername(username);
     }    
     // 관리자 정보

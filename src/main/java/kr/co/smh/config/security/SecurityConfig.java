@@ -51,11 +51,11 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
-                .antMatchers("*").permitAll() // 로그인 api
+                //.authorizeHttpRequests() // HttpServletRequest를 사용하는 요청들에 대한 접근제한을 설정하겠다.
+                //.antMatchers("*").permitAll() // 로그인 api
                 //.anyRequest().authenticated()
         
-                .and()
+                //.and()
                 .apply(new JwtSecurityConfig(tokenProvider, authenticationManagerBuilder));
 
                 

@@ -93,6 +93,7 @@ public class TokenProvider implements InitializingBean {
        var RTcookie = URLEncoder.encode(cookieValue, UTF_8);
        Cookie cookie = new Cookie(cookieName, RTcookie);
        cookie.setHttpOnly(true);
+       cookie.setSecure(true);
        cookie.setPath("/");
        cookie.setMaxAge(24 * 60 * 60);
        return cookie;

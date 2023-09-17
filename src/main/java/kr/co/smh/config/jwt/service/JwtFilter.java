@@ -27,39 +27,36 @@ public class JwtFilter extends OncePerRequestFilter  {
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
    
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 	      String jwt = resolveToken(request);
-	      logger.info("토큰 검증 -->" + jwt);
+	      logger.info("accessToken 검증 -->" + jwt);
 	      String requestURI = request.getRequestURI();
 
 	      if (StringUtils.hasText(jwt)) {
 	    	  if(!tokenProvider.validateToken(jwt)) { // access token 만료시
-	    		  logger.info("토큰 기간 만료 -->" + jwt);
+	    		  logger.info("accessToken 기간 만료 -->" + jwt);
 		    	  Cookie rc[] = request.getCookies();
 		    	  String refreshToken = "";
 		    	  for(Cookie cookie : rc) {
+		    		  logger.info(cookie.getName());
 		    		  if (cookie.getName().equals("refreshtoken")) {
 		    			  refreshToken = cookie.getValue();
-		    			  System.out.println("찾은 토큰:" + refreshToken);
-		    		  } else {
-		    			  return;
+		    			  logger.info("찾은 refreshToken -->" + refreshToken);
 		    		  }
 		    	  }
 		    	  Claims AccessTokenInfo = AuthenticatedUserByToken(refreshToken);
-		    	  logger.info("토큰 정보 -->" + AccessTokenInfo.getSubject());
 		    	  if(tokenProvider.getRefreshTokenIsTrue(AccessTokenInfo.getSubject(), refreshToken)) {
 		    		  User user = tokenProvider.getUserDetail(AccessTokenInfo.getSubject());
 
 		    		  Authentication authentication = tokenProvider.createAuthentication(user.getUsername());
 
 		    		  SecurityContextHolder.getContext().setAuthentication(authentication);
-		    	      String acessToken = tokenProvider.createAccessToken(authentication);
-		    	      logger.info("발급받은 토큰: " + acessToken);
-		    		  response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + acessToken);
+		    	      String accessToken = tokenProvider.createAccessToken(authentication);
+		    	      logger.info("새로 발급받은 accessToken -->" + accessToken);
+		    		  response.addHeader(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + accessToken);
 		    	  }
 
 	    	  } else {
