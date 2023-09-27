@@ -1,6 +1,6 @@
 jwt:
   secretKey : leebeomjunleebeomjunleebeomjunleebeomjunleebeomjunleebeomjunLdadqwdadadDqsdad231DAdqladadadadadadadlvqdqddadsa
-  accessToken-valid-seconds : 600 
+  accessToken-valid-seconds : 10
   refreshToken-valid-seconds : 86400
 #  600 #86400
   

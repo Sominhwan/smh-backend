@@ -47,7 +47,7 @@ public class TokenProvider implements InitializingBean {
 		   @Value("${jwt.refreshToken-valid-seconds}") long refreshTokenValidityInSeconds, UserDAO userDAO, CustomUserDetailsService customUserDetailsService) {
       this.secret = secret;
       this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 3000;
-      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds;
+      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 30;
       this.userDAO = userDAO;
       this.customUserDetailsService = customUserDetailsService;
    }
@@ -64,12 +64,12 @@ public class TokenProvider implements InitializingBean {
          .collect(Collectors.joining(","));
       long now = (new Date()).getTime();
       
-      Date validity = new Date(System.currentTimeMillis() + this.accessTokenValidityInMilliseconds);
+      Date validity = new Date(now + this.accessTokenValidityInMilliseconds);
       Date date = new Date();
       return Jwts.builder()
          .setSubject(authentication.getName())
          .claim(AUTHORITIES_KEY, authorities)
-         .setIssuedAt(date)
+         //.setIssuedAt(date)
          .signWith(key, SignatureAlgorithm.HS512)
          .setExpiration(validity)
          .compact();
@@ -77,12 +77,12 @@ public class TokenProvider implements InitializingBean {
    // Refresh Token 발급
    public String createRefreshToken(Authentication authentication) {
        long now = (new Date()).getTime();
-       Date validity = new Date(System.currentTimeMillis() + this.refreshTokenValidityInMilliseconds);
+       Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
        Date date = new Date();
        return Jwts.builder()
                .setSubject(authentication.getName())
                .setExpiration(validity)
-               .setIssuedAt(date)
+               //.setIssuedAt(date)
                .signWith(key, SignatureAlgorithm.HS512)
                .compact();
    }  
@@ -144,7 +144,7 @@ public class TokenProvider implements InitializingBean {
    }
    public Authentication createAuthentication(String email) {
        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-       System.out.println("권한 -->" + userDetails.getAuthorities());
+       logger.info("권한 -->" + userDetails.getAuthorities());
        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
    }
 }

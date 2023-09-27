@@ -26,7 +26,6 @@ public class JwtFilter extends OncePerRequestFilter  {
 	private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 	private final TokenProvider tokenProvider;
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
    
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

@@ -71,7 +71,7 @@ public class UserService {
     public ResponseEntity<TokenDTO> authLogin(LoginDTO loginDTO, HttpServletResponse response) {
 	    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 	    Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        //SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 	    log.info("자동 로그인 여부 -->" + loginDTO.isAutoLogin());
 	    String refreshToken = "";
 	    if(loginDTO.isAutoLogin()) {
