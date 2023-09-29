@@ -16,6 +16,8 @@ public interface UserDAO {
     void insertUser(User user); 
     // 회원 가입 권한 저장
     void insertUserAuthority(@Param("email") String email, @Param("authorityName") String authorityName);
+    // 로그아웃 RefreshToken 삭제
+    void deleteRefreshToken(String email);
     // 회원 정보 가져오기
     User findOneWithAuthoritiesByUsername(String email);
     // 권한 정보 가져오기

@@ -43,6 +43,13 @@ public class AuthController {
 		log.info("authLogin --> " + loginDTO);
 		return userService.authLogin(loginDTO, response);
 	}
+	// 로그아웃
+	@GetMapping(value="/logout")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+	public ResponseEntity<?> authLogout(HttpServletResponse response) {
+		return ResponseEntity.ok(userService.authLogout(response));
+		
+	}
 	// 유저 정보
     @GetMapping("/user")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")

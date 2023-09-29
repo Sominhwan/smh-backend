@@ -47,7 +47,7 @@ public class TokenProvider implements InitializingBean {
 		   @Value("${jwt.refreshToken-valid-seconds}") long refreshTokenValidityInSeconds, UserDAO userDAO, CustomUserDetailsService customUserDetailsService) {
       this.secret = secret;
       this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 3000;
-      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 30;
+      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 100;
       this.userDAO = userDAO;
       this.customUserDetailsService = customUserDetailsService;
    }
@@ -69,7 +69,7 @@ public class TokenProvider implements InitializingBean {
       return Jwts.builder()
          .setSubject(authentication.getName())
          .claim(AUTHORITIES_KEY, authorities)
-         //.setIssuedAt(date)
+         .setIssuedAt(date)
          .signWith(key, SignatureAlgorithm.HS512)
          .setExpiration(validity)
          .compact();
@@ -82,7 +82,7 @@ public class TokenProvider implements InitializingBean {
        return Jwts.builder()
                .setSubject(authentication.getName())
                .setExpiration(validity)
-               //.setIssuedAt(date)
+               .setIssuedAt(date)
                .signWith(key, SignatureAlgorithm.HS512)
                .compact();
    }  

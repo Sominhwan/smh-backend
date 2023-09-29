@@ -89,6 +89,17 @@ public class UserService {
    
 	    return new ResponseEntity<>(new TokenDTO(accessToken, refreshToken), httpHeaders, HttpStatus.OK);    	
     }
+    // 로그아웃
+    @Transactional(readOnly = false)
+    public ResponseEntity<?> authLogout(HttpServletResponse response) {
+    	String username = SecurityUtil.getCurrentUsername();
+    	userDAO.deleteRefreshToken(username);
+    	Cookie cookie = new Cookie("refreshtoken", null);
+    	cookie.setMaxAge(0);
+    	cookie.setPath("/");
+    	response.addCookie(cookie);
+    	return new ResponseEntity<>(HttpStatus.OK);
+    }
     // 유저 정보
     @Transactional(readOnly = true)
     public User getMyUserWithAuthorities() {
