@@ -60,12 +60,12 @@ public class UserService {
 	    userDAO.insertUser(user);
 	    userDAO.insertUserAuthority(user.getEmail(), authority.getAuthorityName());
 	  	
-			return new ResponseEntity<>(
-					ResDTO.builder()
-						  .code(0)
-						  .message("회원가입이 완료되었습니다.")
-						  .build(),
-						  HttpStatus.OK);   	  
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("회원가입이 완료되었습니다.")
+					  .build(),
+					  HttpStatus.OK);   	  
     }
     // 로그인
     public ResponseEntity<TokenDTO> authLogin(LoginDTO loginDTO, HttpServletResponse response) {
@@ -113,5 +113,17 @@ public class UserService {
     	user.setAuthorities(userDAO.findOneWithAuthorityName(user.getUserId()));
     	log.info("User Authority -->" + user.getAuthorities());
         return user;
+    }
+    // 비밀번호 찾기(아이디 검증)
+    @Transactional(readOnly = true)
+    public HttpEntity<?> authId(String email) {
+    	boolean flag = userDAO.findId(email);
+    	
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .data(flag)
+					  .build(),
+					  HttpStatus.OK);      	
     }
 }

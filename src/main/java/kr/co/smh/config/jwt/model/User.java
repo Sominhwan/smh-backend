@@ -17,6 +17,7 @@ public class User {
 	private int userId; // 식별번호
 	private String email; // 이메일
 	private String username;
+	private String nickname; // 닉네임
 	private String password; // 비밀번호
 	private String koreaName; // 한국이름
 	private String foreignerName; // 외국이름

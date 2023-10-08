@@ -51,15 +51,21 @@ public class AuthController {
 		
 	}
 	// 유저 정보
-    @GetMapping("/user")
+    @GetMapping(value="/user")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<User> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getMyUserWithAuthorities());
     }
     // 관리자 정보
-    @GetMapping("/user/{username}")
+    @GetMapping(value="/user/{username}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<User> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserWithAuthorities(username));
+    }
+    // 비밀번호찾기(아이디 확인)
+    @PostMapping(value="/id")
+    public HttpEntity<?> authId(@Nullable @RequestBody LoginDTO loginDTO) {
+		log.info("authId --> " + loginDTO.getEmail());
+		return userService.authId(loginDTO.getEmail());
     }
 }

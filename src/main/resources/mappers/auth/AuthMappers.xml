@@ -71,7 +71,7 @@
 	<!-- 유저정보 가져오기 -->
 	<select id="findOneWithAuthoritiesByUsername" resultType="kr.co.smh.config.jwt.model.User">
 		<![CDATA[
-			SELECT user_id, email as username, password
+			SELECT user_id, email as username, nickname, password
 			FROM user_info
 			WHERE email = #{email}
 		]]>	
@@ -91,5 +91,13 @@
 			LEFT JOIN user_info ui ON ui.user_id  = ut.user_id 
 			WHERE ui.email = #{email}
 		]]>		
+	</select>
+	<!-- 아이디 검증 -->
+	<select id="findId" resultType="boolean">
+		<![CDATA[
+			SELECT CASE WHEN COUNT(*) = 1 THEN true ELSE false END
+			FROM user_info
+			WHERE email = #{email}
+		]]>	
 	</select>
 </mapper>

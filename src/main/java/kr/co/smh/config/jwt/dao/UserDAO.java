@@ -26,4 +26,6 @@ public interface UserDAO {
     void insertRefreshToken(@Param("email")String email, @Param("refreshToken")String refreshToken);
     // refresh token 비교
     String getRefreshToken(String email);
+    // 비밀번호 찾기(아이디 검증)
+    boolean findId(String email);
 }
