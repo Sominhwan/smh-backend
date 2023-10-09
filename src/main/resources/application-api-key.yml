@@ -6,3 +6,7 @@ jwt:
   
 weather:
   secretKey: 8f3f7b217f784989c575f5f9e6a7b37b
+  
+recaptcha:
+  secretKey: 6LdJJYsoAAAAANh0NN7YQhDlUUeQO30YpfBeGB_B
+  url: https://www.google.com/recaptcha/api/siteverify
