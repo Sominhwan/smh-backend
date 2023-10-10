@@ -14,6 +14,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import kr.co.smh.common.dto.ResDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +31,7 @@ public class ReCaptchaService {
 	@Value("${recaptcha.url}")
 	private String URL;
 	
-	public HttpEntity<?> reCaptcha(String token) {
+	public HttpEntity<?> reCaptcha(String token) throws JsonMappingException, JsonProcessingException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		
@@ -45,16 +50,21 @@ public class ReCaptchaService {
         );
 
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            String responseBody = responseEntity.getBody();
-            log.info("reCAPTCHA result --> " + responseBody);
-            
+            log.info("reCAPTCHA result --> " + responseEntity.getBody());
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode responseJson = objectMapper.readTree(responseEntity.getBody());
+    		return new ResponseEntity<>(	
+    				ResDTO.builder()
+    					  .code(0)
+    					  .data(responseJson)
+    					  .build(),
+    					  HttpStatus.OK);          
         } else {
-
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(1)
+    					  .build(),
+    					  HttpStatus.BAD_REQUEST);  
         }
-		return new ResponseEntity<>(
-				ResDTO.builder()
-					  .code(0)
-					  .build(),
-					  HttpStatus.OK);  
 	}
 }

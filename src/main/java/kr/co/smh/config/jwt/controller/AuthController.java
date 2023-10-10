@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.dto.SecretKeyDTO;
 import kr.co.smh.common.service.ReCaptchaService;
@@ -75,7 +78,7 @@ public class AuthController {
     }
     // ReCAPTCHA(인증)
     @PostMapping(value="/recaptcha")
-    public HttpEntity<?> reCaptcha(@Nullable @RequestBody SecretKeyDTO secretKeyDTO) {
+    public HttpEntity<?> reCaptcha(@Nullable @RequestBody SecretKeyDTO secretKeyDTO) throws JsonMappingException, JsonProcessingException {
 		return reCaptchaService.reCaptcha(secretKeyDTO.getSecret());
     }
 }
