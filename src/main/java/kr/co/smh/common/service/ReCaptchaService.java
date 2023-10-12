@@ -53,10 +53,11 @@ public class ReCaptchaService {
             log.info("reCAPTCHA result --> " + responseEntity.getBody());
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode responseJson = objectMapper.readTree(responseEntity.getBody());
+            
     		return new ResponseEntity<>(	
     				ResDTO.builder()
     					  .code(0)
-    					  .data(responseJson)
+    					  .data(responseJson.get("success").asText())
     					  .build(),
     					  HttpStatus.OK);          
         } else {

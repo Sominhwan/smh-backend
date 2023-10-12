@@ -20,12 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.smh.common.dto.ResDTO;
+import kr.co.smh.common.service.CertificationNumberService;
 import kr.co.smh.config.jwt.dao.UserDAO;
 import kr.co.smh.config.jwt.dto.LoginDTO;
 import kr.co.smh.config.jwt.dto.TokenDTO;
 import kr.co.smh.config.jwt.model.Authority;
 import kr.co.smh.config.jwt.model.User;
 import kr.co.smh.config.jwt.util.SecurityUtil;
+import kr.co.smh.util.cafe24.service.Cafe24Service;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,6 +36,8 @@ public class UserService {
 	private static final Logger log = LogManager.getLogger("kr.co.smh");
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final kr.co.smh.config.jwt.service.TokenProvider tokenProvider;
+    private final CertificationNumberService certificationNumberService;
+    private final Cafe24Service cafe24Service;
     private final PasswordEncoder passwordEncoder;
     private final UserDAO userDAO;
 
@@ -123,6 +127,37 @@ public class UserService {
 				ResDTO.builder()
 					  .code(0)
 					  .data(flag)
+					  .build(),
+					  HttpStatus.OK);      	
+    }
+    // 비밀번호 찾기(휴대폰번호 확인, 인증번호 전송)
+    @Transactional(readOnly = true)
+    public HttpEntity<?> authPhoneNum(String email, String koreaName, String phoneNum) {
+    	Integer code = 0;
+    	String data = "";
+    	String content = "";
+    	User user = userDAO.findOneWithAuthoritiesByUsername(email);
+
+ 
+    	if(!koreaName.equals(user.getKoreaName()) || !phoneNum.equals(user.getPhoneNum())) {
+    		code = 1;
+    		data = "이름 또는 휴대폰 번호가 가입된 아이디 정보와 일치하지 않습니다.";
+    	} else {
+    		// 인증번호 생성
+    		int certificationNumber = certificationNumberService.createCertificationNumber(); 
+    		content += "인증번호 ["+ certificationNumber + "] 타인에게 절대 알려주지 마세요.";
+    		try {
+				cafe24Service.sendSMS(content, phoneNum);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}    		// TODO 
+    	}
+	
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(code)
+					  .data(data)
 					  .build(),
 					  HttpStatus.OK);      	
     }

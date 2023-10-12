@@ -10,3 +10,8 @@ weather:
 recaptcha:
   secretKey: 6LdJJYsoAAAAANh0NN7YQhDlUUeQO30YpfBeGB_B
   url: https://www.google.com/recaptcha/api/siteverify
+  
+cafe24:
+  id: thalsghks
+  secretKey: a7df2ef01970f20ed87a0051f81592ff
+  url: https://sslsms.cafe24.com/sms_sender.php

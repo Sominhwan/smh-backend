@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.dto.SecretKeyDTO;
 import kr.co.smh.common.service.ReCaptchaService;
 import kr.co.smh.config.jwt.dto.LoginDTO;
@@ -70,11 +68,19 @@ public class AuthController {
     public ResponseEntity<User> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserWithAuthorities(username));
     }
-    // 비밀번호찾기(아이디 확인)
+    // 비밀번호 찾기(아이디 확인)
     @PostMapping(value="/id")
     public HttpEntity<?> authId(@Nullable @RequestBody LoginDTO loginDTO) {
 		log.info("authId --> " + loginDTO.getEmail());
 		return userService.authId(loginDTO.getEmail());
+    }
+    // 비밀번호 찾기(휴대폰번호 확인, 인증번호 전송)
+    @PostMapping(value="/phonenum")
+    public HttpEntity<?> authPhoneNum(@Nullable @RequestBody User user) {
+		log.info("userEmail --> " + user.getEmail());
+		log.info("userName --> " + user.getKoreaName());
+		log.info("userPhoneNum --> " + user.getPhoneNum());
+		return userService.authPhoneNum(user.getEmail(), user.getKoreaName(), user.getPhoneNum());
     }
     // ReCAPTCHA(인증)
     @PostMapping(value="/recaptcha")
