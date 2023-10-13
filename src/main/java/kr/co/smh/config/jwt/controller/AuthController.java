@@ -54,7 +54,6 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ResponseEntity<?> authLogout(HttpServletResponse response) {
 		return ResponseEntity.ok(userService.authLogout(response));
-		
 	}
 	// 유저 정보
     @GetMapping(value="/user")

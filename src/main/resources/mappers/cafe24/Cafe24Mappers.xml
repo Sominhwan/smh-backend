@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smh.util.cafe24.dao.SmsMessageDAO">
+	<!-- Sms 내용 저장 -->
+	<insert id="insertSmsContent" parameterType="kr.co.smh.util.cafe24.model.SmsMessageVO">
+		<![CDATA[
+			INSERT INTO sms_message(
+				user_id, 
+				content, 
+				create_at
+			)
+			VALUES (
+				#{userId},
+				#{content},
+				#{createAt}
+			)
+		]]>
+	</insert>
+</mapper>

@@ -2,13 +2,14 @@ package kr.co.smh.util.cafe24.service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.MessageDigest;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,27 +18,31 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
 
+import kr.co.smh.util.cafe24.dao.SmsMessageDAO;
+import kr.co.smh.util.cafe24.model.SmsMessageVO;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class Cafe24Service {
 	private static final Logger log = LogManager.getLogger("kr.co.smh");
+	private final SmsMessageDAO smsMessageDAO;
 	@Value("${cafe24.secretKey}")
 	private String SECRET_KEY;
 	@Value("${cafe24.id}")
 	private String id;
 	@Value("${cafe24.url}")
 	private String URL;
-	
-	public String sendSMS(String content, String callerIdentification) throws Exception {
+	// SMS 전송
+	public boolean sendSMS(int userId, String content, String callerIdentification) throws Exception {
+		boolean flag = false;
 	    String charsetType = "UTF-8"; //EUC-KR 또는 UTF-8
         String sms_url = "";
 	    sms_url = URL; // SMS 전송요청 URL	
 	    String user_id = base64Encode(id); // SMS아이디
 	    String secure = base64Encode(SECRET_KEY);//인증키
 	    String msg = base64Encode(nullcheck(content, ""));
-	    String rphone = base64Encode(nullcheck("010-4662-7527", ""));
+	    String rphone = base64Encode(nullcheck(callerIdentification, ""));
 	    String sphone1 = base64Encode(nullcheck("010", ""));
 	    String sphone2 = base64Encode(nullcheck("4662", ""));
 	    String sphone3 = base64Encode(nullcheck("7527", ""));
@@ -48,7 +53,7 @@ public class Cafe24Service {
 	    if(nullcheck("smsType", "").equals("L")) {
 	        subject = base64Encode(nullcheck("", ""));
 	    }
-	    String testflag = base64Encode(nullcheck("", ""));
+	    String testflag = base64Encode(nullcheck("Y", "")); // 'Y'일시 테스트 전송
 	    String destination = base64Encode(nullcheck("", ""));
 	    String repeatFlag = base64Encode(nullcheck("", ""));
 	    String repeatNum = base64Encode(nullcheck("", ""));
@@ -110,9 +115,7 @@ public class Cafe24Service {
 	        data += "\r\n"+value+"\r\n";
 	        data +="--"+boundary+"\r\n";
 	    }
-	
-	    //out.println(data);
-	
+		
 	    InetAddress addr = InetAddress.getByName(host);
 	    Socket socket = new Socket(host, port);
 	    // 헤더 전송
@@ -149,7 +152,9 @@ public class Cafe24Service {
 	    if(Result.equals("success")) {
 	        alert = "성공적으로 발송하였습니다.";
 	        alert += " 잔여건수는 "+ Count+"건 입니다.";
+	        flag = true;
 	    }
+	    // 예약 발송
 	    else if(Result.equals("reserved")) {
 	        alert = "성공적으로 예약되었습니다";
 	        alert += " 잔여건수는 "+ Count+"건 입니다.";
@@ -163,16 +168,25 @@ public class Cafe24Service {
 	
 	
 	    if(nointeractive.equals("1") && !(Result.equals("Test Success!")) && !(Result.equals("success")) && !(Result.equals("reserved")) ) {
-	        //out.println("<script>alert('" + alert + "')</script>");
-	    	log.info("테스트 성공 --> " + tmpArr + "결과: " +  alert);
+	    	log.info("테스트 성공 --> " + tmpArr + ", 결과: " +  alert);
 	    }
 	    else if(!(nointeractive.equals("1"))) { // 메일 전송 성공시
-	        //out.println("<script>alert('" + alert + "')</script>");
-	    	log.info("메일 전송 성공 --> " + tmpArr + "결과: " + alert);
+	    	log.info("메일 전송 성공 --> " + tmpArr + ", 결과: " + alert);
+	    	insertSMSContent(userId, content);
 	    }
-	
 		
-		return "안녕";
+		return flag;
+	}
+	// 문자전송 내용 저장
+	public void insertSMSContent(int userId, String content) {
+		Date date = new Date();
+		Timestamp timestamp = new Timestamp(date.getTime());
+		SmsMessageVO smsMessageVO = SmsMessageVO.builder()
+												.userId(userId)
+												.content(content)
+												.createAt(timestamp)
+												.build();
+		smsMessageDAO.insertSmsContent(smsMessageVO);	
 	}
 	// NULL값 확인
     public static String nullcheck(String str, String Defaultvalue ) throws Exception
