@@ -23,9 +23,11 @@ public interface UserDAO {
     // 권한 정보 가져오기
     Set<Authority> findOneWithAuthorityName(int userId);
     // refresh token 저장
-    void insertRefreshToken(@Param("email")String email, @Param("refreshToken")String refreshToken);
+    void insertRefreshToken(@Param("email") String email, @Param("refreshToken") String refreshToken);
     // refresh token 비교
     String getRefreshToken(String email);
     // 비밀번호 찾기(아이디 검증)
     boolean findId(String email);
+    // 비밀번호 변경 
+    void changePassword(@Param("password") String password, @Param("email") String email);
 }

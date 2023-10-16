@@ -53,7 +53,7 @@ public class Cafe24Service {
 	    if(nullcheck("smsType", "").equals("L")) {
 	        subject = base64Encode(nullcheck("", ""));
 	    }
-	    String testflag = base64Encode(nullcheck("Y", "")); // 'Y'일시 테스트 전송
+	    String testflag = base64Encode(nullcheck("", "")); // 'Y'일시 테스트 전송
 	    String destination = base64Encode(nullcheck("", ""));
 	    String repeatFlag = base64Encode(nullcheck("", ""));
 	    String repeatNum = base64Encode(nullcheck("", ""));

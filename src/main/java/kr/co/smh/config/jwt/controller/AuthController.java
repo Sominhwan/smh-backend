@@ -76,10 +76,14 @@ public class AuthController {
     // 비밀번호 찾기(휴대폰번호 확인, 인증번호 전송)
     @PostMapping(value="/phonenum")
     public HttpEntity<?> authPhoneNum(@Nullable @RequestBody User user) {
-		log.info("userEmail --> " + user.getEmail());
-		log.info("userName --> " + user.getKoreaName());
-		log.info("userPhoneNum --> " + user.getPhoneNum());
 		return userService.authPhoneNum(user.getEmail(), user.getKoreaName(), user.getPhoneNum());
+    }
+    // 비밀번호 변경
+    @PostMapping(value="/password")
+    public HttpEntity<?> authPassword(@Nullable @RequestBody User user) {
+    	log.info("userEmail -->" + user.getEmail());
+    	log.info("userPassword -->" + user.getPassword());
+		return userService.authPassword(user.getEmail(), user.getPassword());
     }
     // ReCAPTCHA(인증)
     @PostMapping(value="/recaptcha")

@@ -167,4 +167,26 @@ public class UserService {
 					  .build(),
 					  HttpStatus.OK);      	
     }
+    // 비밀번호 변경
+    public HttpEntity<?> authPassword(String email, String password) {
+    	User user = userDAO.findOneWithAuthoritiesByUsername(email);
+    	boolean flag = passwordEncoder.matches(password, user.getPassword());
+    	if(flag) {
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(1)
+    					  .data("이전과 같은 비밀번호입니다. 다른 비밀번호를 입력하세요.")
+    					  .build(),
+    					  HttpStatus.OK); 
+    	} else {
+    		String changePassword = passwordEncoder.encode(password);
+    		userDAO.changePassword(changePassword, email);
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(0)
+    					  .data("비밀번호 변경에 성공하였습니다.")
+    					  .build(),
+    					  HttpStatus.OK); 
+    	}	
+    }
 }
