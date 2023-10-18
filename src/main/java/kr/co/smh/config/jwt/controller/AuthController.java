@@ -90,4 +90,9 @@ public class AuthController {
     public HttpEntity<?> reCaptcha(@Nullable @RequestBody SecretKeyDTO secretKeyDTO) throws JsonMappingException, JsonProcessingException {
 		return reCaptchaService.reCaptcha(secretKeyDTO.getSecret());
     }
+    // 비밀번호 찾기(이메일 인증)
+    @PostMapping(value="/email")
+    public HttpEntity<?> authEmail(@Nullable @RequestBody User user) {
+		return userService.authEmail(user.getEmail(), user.getKoreaName(), user.getBirthDate());
+    }
 }

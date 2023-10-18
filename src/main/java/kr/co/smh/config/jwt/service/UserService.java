@@ -189,4 +189,25 @@ public class UserService {
     					  HttpStatus.OK); 
     	}	
     }
+    // 비밀번호 찾기(이메일 인증)
+    public HttpEntity<?> authEmail(String email, String name, String birthDate) {
+       	User user = userDAO.findOneWithAuthoritiesByUsername(email);
+       	if(user.getKoreaName().equals(name) && user.getBirthDate().equals(birthDate)) {
+       		System.out.println("일치합니다");
+       		// 20231019 TODO 이메일 인증하기 추가
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(0)
+    					  .data("이메일로 인증번호를 발송하였습니다.")
+    					  .build(),
+    					  HttpStatus.OK); 
+       	} else {
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(1)
+    					  .data("회원정보가 일치하지 않습니다.\n다시 입력해주세요.")
+    					  .build(),
+    					  HttpStatus.OK); 
+       	}
+    }
 }
