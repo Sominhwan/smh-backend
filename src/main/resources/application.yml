@@ -15,7 +15,17 @@ spring:
   redis:
     host: localhost
     port: 6379
-        
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: photalk2@gmail.com #Gmail email
+    password: qymxisfpnahvqyjw #Google 계정 2단계 인증 생성 후 앱 비밀번호 생성
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true     
 mybatis:
   mapper-locations: classpath:mappers/*/*.xml
   configuration:

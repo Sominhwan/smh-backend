@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,7 +80,7 @@ public class AuthController {
 		return userService.authPhoneNum(user.getEmail(), user.getKoreaName(), user.getPhoneNum());
     }
     // 비밀번호 변경
-    @PostMapping(value="/password")
+    @PutMapping(value="/password")
     public HttpEntity<?> authPassword(@Nullable @RequestBody User user) {
     	log.info("userEmail -->" + user.getEmail());
     	log.info("userPassword -->" + user.getPassword());

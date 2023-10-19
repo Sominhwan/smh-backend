@@ -2,6 +2,7 @@ package kr.co.smh.config.jwt.service;
 
 import java.util.Collections;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,6 +29,7 @@ import kr.co.smh.config.jwt.model.Authority;
 import kr.co.smh.config.jwt.model.User;
 import kr.co.smh.config.jwt.util.SecurityUtil;
 import kr.co.smh.util.cafe24.service.Cafe24Service;
+import kr.co.smh.util.gmail.service.GmailService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -37,6 +39,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final kr.co.smh.config.jwt.service.TokenProvider tokenProvider;
     private final CertificationNumberService certificationNumberService;
+    private final GmailService gmailService;
     private final Cafe24Service cafe24Service;
     private final PasswordEncoder passwordEncoder;
     private final UserDAO userDAO;
@@ -195,6 +198,9 @@ public class UserService {
        	if(user.getKoreaName().equals(name) && user.getBirthDate().equals(birthDate)) {
        		System.out.println("일치합니다");
        		// 20231019 TODO 이메일 인증하기 추가
+
+			boolean flag = gmailService.sendEmail(email, name);
+
     		return new ResponseEntity<>(
     				ResDTO.builder()
     					  .code(0)
