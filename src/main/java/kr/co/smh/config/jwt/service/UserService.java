@@ -196,15 +196,13 @@ public class UserService {
     public HttpEntity<?> authEmail(String email, String name, String birthDate) {
        	User user = userDAO.findOneWithAuthoritiesByUsername(email);
        	if(user.getKoreaName().equals(name) && user.getBirthDate().equals(birthDate)) {
-       		System.out.println("일치합니다");
-       		// 20231019 TODO 이메일 인증하기 추가
-
-			boolean flag = gmailService.sendEmail(email, name);
+       		int certificationNumber = certificationNumberService.createCertificationNumber();
+			gmailService.sendEmail(email, name, certificationNumber);
 
     		return new ResponseEntity<>(
     				ResDTO.builder()
     					  .code(0)
-    					  .data("이메일로 인증번호를 발송하였습니다.")
+    					  .data(certificationNumber)
     					  .build(),
     					  HttpStatus.OK); 
        	} else {
