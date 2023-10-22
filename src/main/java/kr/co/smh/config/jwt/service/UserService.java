@@ -197,12 +197,12 @@ public class UserService {
        	User user = userDAO.findOneWithAuthoritiesByUsername(email);
        	if(user.getKoreaName().equals(name) && user.getBirthDate().equals(birthDate)) {
        		int certificationNumber = certificationNumberService.createCertificationNumber();
-			gmailService.sendEmail(email, name, certificationNumber);
+			gmailService.sendEmail(user.getUserId(), email, name, certificationNumber);
 
     		return new ResponseEntity<>(
     				ResDTO.builder()
     					  .code(0)
-    					  .data(certificationNumber)
+    					  .data(String.valueOf(certificationNumber))
     					  .build(),
     					  HttpStatus.OK); 
        	} else {

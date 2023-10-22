@@ -1,0 +1,43 @@
+server:
+  port: 8090
+
+spring:
+  profiles:
+    include: api-key
+  # Database
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://localhost:5432/SMH
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:5432/SMH
+    username: postgres
+    password: 1234
+  redis:
+    host: localhost
+    port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: photalk2@gmail.com #Gmail email
+    password: qymxisfpnahvqyjw #Google 계정 2단계 인증 생성 후 앱 비밀번호 생성
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true     
+mybatis:
+  mapper-locations: classpath:mappers/*/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    
+logging:
+  config: classpath:log4j/log4j2.yml
+  level:
+    jdbc:
+     connection: OFF # open close 이벤트를 로그
+     sqlonly: OFF # SQL문만을 로그로 남기며, PreparedStatement일 경우 관련된 argument 값으로 대체된 SQL문이 보여짐
+     audit: OFF # ResultSet을 제외한 모든 JDBC 호출 정보 로그. 많은 양의 로그가 생성되므로 특별히 JDBC 문제를 추적해야 할 필요가 있는 경우를 제외하고는 사용을 권장하지 않음
+     resultset: OFF # ResultSet을 포함한 모든 JDBC 호출 정보
+     resultsettable: OFF # SQL 결과 조회된 데이터의 table
+    #sqltiming: INFO # SQL문과 해당 SQL을 실행시키는데 수행된 시간 정보(milliseconds)
