@@ -18,8 +18,10 @@ public interface UserDAO {
     void insertUserAuthority(@Param("email") String email, @Param("authorityName") String authorityName);
     // 로그아웃 RefreshToken 삭제
     void deleteRefreshToken(String email);
-    // 회원 정보 가져오기
+    // 회원 정보 가져오기(이메일)
     User findOneWithAuthoritiesByUsername(String email);
+    // 회원 아이디 가져오기(이름, 휴대폰번호)
+    User findUserId(@Param("koreaName") String koreaName, @Param("phoneNum") String phoneNum);
     // 권한 정보 가져오기
     Set<Authority> findOneWithAuthorityName(int userId);
     // refresh token 저장

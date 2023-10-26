@@ -2,7 +2,6 @@ package kr.co.smh.config.jwt.service;
 
 import java.util.Collections;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -120,6 +119,43 @@ public class UserService {
     	user.setAuthorities(userDAO.findOneWithAuthorityName(user.getUserId()));
     	log.info("User Authority -->" + user.getAuthorities());
         return user;
+    }
+    // 아이디 찾기(휴대폰번호 확인, 인증번호 전송)
+    @Transactional(readOnly = false)
+    public HttpEntity<?> authPhoneNumId(String koreaName, String phoneNum) {
+    	Integer code = 0;
+    	String data = "";
+    	String content = "";
+    	User user = userDAO.findUserId(koreaName, phoneNum);
+    	String phone = phoneNum.substring(0, 3) + "-" + phoneNum.substring(3, 7) + "-" + phoneNum.substring(7);
+    	
+    	if(user == null) {
+    		code = 1;
+    		data = "가입된 계정이 없습니다.";
+    	} else {
+    		// 인증번호 생성
+    		int certificationNumber = certificationNumberService.createCertificationNumber(); 
+    		content += "[SMS] 본인확인\n인증번호 ["+ certificationNumber + "] 타인에게 절대 알려주지 마세요.";
+    		try {
+				if(cafe24Service.sendSMS(user.getUserId(), content, phone)) {
+					code = 0;
+					data = String.valueOf(certificationNumber);
+				} else {
+					code = 1;
+		    		data = "알 수 없는 오류가 발생했습니다.";
+				}
+			} catch (Exception e) {
+	    		code = 1;
+	    		data = "알 수 없는 오류가 발생했습니다.";
+			}    		
+    	}
+    	
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(code)
+					  .data(data)
+					  .build(),
+					  HttpStatus.OK);      	
     }
     // 비밀번호 찾기(아이디 검증)
     @Transactional(readOnly = true)

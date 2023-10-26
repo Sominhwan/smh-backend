@@ -68,6 +68,11 @@ public class AuthController {
     public ResponseEntity<User> getUserInfo(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUserWithAuthorities(username));
     }
+    // 아이디 찾기(휴대폰번호 확인, 인증번호 전송)
+    @PostMapping(value="/phonenum/id")
+    public HttpEntity<?> authPhoneNumId(@Nullable @RequestBody User user) {
+		return userService.authPhoneNumId(user.getKoreaName(), user.getPhoneNum());
+    }
     // 비밀번호 찾기(아이디 확인)
     @PostMapping(value="/id")
     public HttpEntity<?> authId(@Nullable @RequestBody LoginDTO loginDTO) {

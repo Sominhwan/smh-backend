@@ -75,6 +75,15 @@
 			FROM user_info
 			WHERE email = #{email}
 		]]>	
+	</select>
+	<!-- 유저아이디 가져오기 -->
+	<select id="findUserId" resultType="kr.co.smh.config.jwt.model.User">
+		<![CDATA[
+			SELECT email, korea_name, phone_num
+			FROM user_info
+			WHERE korea_name = #{koreaName}
+			  AND phone_num = #{phoneNum}
+		]]>	
 	</select> 
 	<select id="findOneWithAuthorityName" resultType="kr.co.smh.config.jwt.model.Authority">
 		<![CDATA[
