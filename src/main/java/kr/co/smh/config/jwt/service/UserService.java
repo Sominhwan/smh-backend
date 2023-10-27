@@ -1,6 +1,8 @@
 package kr.co.smh.config.jwt.service;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 
 import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.service.CertificationNumberService;
@@ -125,6 +131,7 @@ public class UserService {
     public HttpEntity<?> authPhoneNumId(String koreaName, String phoneNum) {
     	Integer code = 0;
     	String data = "";
+    	Map<String, Object> jsonData = new HashMap<>();
     	String content = "";
     	User user = userDAO.findUserId(koreaName, phoneNum);
     	String phone = phoneNum.substring(0, 3) + "-" + phoneNum.substring(3, 7) + "-" + phoneNum.substring(7);
@@ -139,7 +146,8 @@ public class UserService {
     		try {
 				if(cafe24Service.sendSMS(user.getUserId(), content, phone)) {
 					code = 0;
-					data = String.valueOf(certificationNumber);
+					jsonData.put("email", user.getEmail());
+					jsonData.put("certificationNumber", String.valueOf(certificationNumber));
 				} else {
 					code = 1;
 		    		data = "알 수 없는 오류가 발생했습니다.";
@@ -154,6 +162,7 @@ public class UserService {
 				ResDTO.builder()
 					  .code(code)
 					  .data(data)
+					  .data2(jsonData)
 					  .build(),
 					  HttpStatus.OK);      	
     }
