@@ -32,4 +32,6 @@ public interface UserDAO {
     boolean findId(String email);
     // 비밀번호 변경 
     void changePassword(@Param("password") String password, @Param("email") String email);
+    // 닉네임 중복확인
+    boolean checkNickname(String nickname);
 }

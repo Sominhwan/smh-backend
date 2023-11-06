@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
+import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.dto.SecretKeyDTO;
 import kr.co.smh.common.service.ReCaptchaService;
 import kr.co.smh.config.jwt.dto.LoginDTO;
@@ -100,5 +103,10 @@ public class AuthController {
     @PostMapping(value="/email")
     public HttpEntity<?> authEmail(@Nullable @RequestBody User user) {
 		return userService.authEmail(user.getEmail(), user.getKoreaName(), user.getBirthDate());
+    }
+    // 닉네임 중복확인
+    @GetMapping(value="/nickname")
+    public HttpEntity<?> authNickname(@Nullable @RequestParam String nickname) {
+		return userService.authNickname(nickname);
     }
 }

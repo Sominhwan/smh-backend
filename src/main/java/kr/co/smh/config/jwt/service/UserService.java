@@ -21,10 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
-
 import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.service.CertificationNumberService;
 import kr.co.smh.config.jwt.dao.UserDAO;
@@ -258,5 +254,24 @@ public class UserService {
     					  .build(),
     					  HttpStatus.OK); 
        	}
+    }
+    // 닉네임 중복확인
+    public HttpEntity<?> authNickname(String nickname) {
+    	boolean flag = userDAO.checkNickname(nickname);
+    	if(flag) { // 중복된 닉네임인 경우
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(0)
+    					  .data("이미 존재하는 닉네임입니다.")
+    					  .build(),
+    					  HttpStatus.OK);
+    	} else { // 중복되지 않은 경우
+    		return new ResponseEntity<>(
+    				ResDTO.builder()
+    					  .code(1)
+    					  .data("사용가능한 닉네임입니다.")
+    					  .build(),
+    					  HttpStatus.OK);
+    	}
     }
 }

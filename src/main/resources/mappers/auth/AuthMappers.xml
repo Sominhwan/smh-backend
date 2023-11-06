@@ -117,4 +117,14 @@
 			WHERE email = #{email}
 		]]>	
 	</update>
+	<!-- 닉네임 중복체크 -->
+	<select id="checkNickname" resultType="boolean">
+		<![CDATA[
+			SELECT EXISTS (
+				SELECT 1 
+				FROM user_info 
+				WHERE nickname = #{nickname}
+				) AS result;
+		]]>	
+	</select>
 </mapper>
