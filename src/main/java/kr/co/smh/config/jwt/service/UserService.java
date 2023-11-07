@@ -274,4 +274,15 @@ public class UserService {
     					  HttpStatus.OK);
     	}
     }
+    // 닉네임 변경하기
+    public HttpEntity<?> changeNickname(String nickname, int userId) {
+    	userDAO.changeNickname(nickname, userId);
+
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(1)
+					  .data("수정완료되었습니다.")
+					  .build(),
+					  HttpStatus.OK);	
+    }
 }

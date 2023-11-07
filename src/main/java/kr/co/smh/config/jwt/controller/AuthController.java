@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.dto.SecretKeyDTO;
 import kr.co.smh.common.service.ReCaptchaService;
 import kr.co.smh.config.jwt.dto.LoginDTO;
@@ -31,7 +29,6 @@ import kr.co.smh.config.jwt.dto.TokenDTO;
 import kr.co.smh.config.jwt.model.User;
 import kr.co.smh.config.jwt.service.UserService;
 import lombok.RequiredArgsConstructor;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -108,5 +105,10 @@ public class AuthController {
     @GetMapping(value="/nickname")
     public HttpEntity<?> authNickname(@Nullable @RequestParam String nickname) {
 		return userService.authNickname(nickname);
+    }
+    // 닉네임 변경하기
+    @PostMapping(value="/nickname")
+    public HttpEntity<?> changeNickname(@Nullable @RequestBody User user) {
+		return userService.changeNickname(user.getNickname(), user.getUserId());
     }
 }

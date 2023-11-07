@@ -34,4 +34,6 @@ public interface UserDAO {
     void changePassword(@Param("password") String password, @Param("email") String email);
     // 닉네임 중복확인
     boolean checkNickname(String nickname);
+    // 닉네임 변경하기
+    void changeNickname(@Param("nickname") String nickname, @Param("userId") int userId);
 }

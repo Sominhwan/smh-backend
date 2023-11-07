@@ -127,4 +127,12 @@
 				) AS result;
 		]]>	
 	</select>
+	<!-- 닉네임 변경하기 -->
+	<select id="changeNickname">
+		<![CDATA[
+			UPDATE user_info 
+			SET nickname = #{nickname}
+			WHERE user_id = #{userId}
+		]]>	
+	</select>
 </mapper>
