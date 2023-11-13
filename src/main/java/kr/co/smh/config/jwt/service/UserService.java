@@ -53,7 +53,7 @@ public class UserService {
 			return new ResponseEntity<>(
 					ResDTO.builder()
 						  .code(0)
-						  .message("이미 존재하는 회원입니다..")
+						  .message("이미 존재하는 회원입니다.")
 						  .build(),
 						  HttpStatus.BAD_REQUEST); 
 	    }    	

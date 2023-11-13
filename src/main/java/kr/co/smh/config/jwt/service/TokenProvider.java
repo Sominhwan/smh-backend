@@ -47,7 +47,7 @@ public class TokenProvider implements InitializingBean {
 		   @Value("${jwt.refreshToken-valid-seconds}") long refreshTokenValidityInSeconds, UserDAO userDAO, CustomUserDetailsService customUserDetailsService) {
       this.secret = secret;
       this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 3000;
-      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 100;
+      this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
       this.userDAO = userDAO;
       this.customUserDetailsService = customUserDetailsService;
    }
@@ -95,7 +95,7 @@ public class TokenProvider implements InitializingBean {
        cookie.setHttpOnly(true);
        cookie.setSecure(true);
        cookie.setPath("/");
-       cookie.setMaxAge(24 * 60 * 60);
+       cookie.setMaxAge(24 * 60 * 60 * 7);
        return cookie;
    }
    public Authentication getAuthentication(String token) {

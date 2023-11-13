@@ -24,7 +24,7 @@ public class GmailService {
 	private final JavaMailSender javaMailSender;
 	private final EmailMessageDAO emailMessageDAO;
 
-    // 단일 전송
+    // 이메일 인증번호 단일 전송
 	@Async
     public void sendEmail(int userId, String userEmail, String userName, int certificationNumber) {
         String title = "비밀번호 찾기를 위한 인증 메일입니다.";	
