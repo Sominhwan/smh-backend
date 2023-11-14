@@ -67,6 +67,8 @@ dependencies {
 	implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
 	// GSON
 	implementation 'com.google.code.gson:gson:2.8.8'
+	// AWS S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
