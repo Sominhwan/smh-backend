@@ -71,7 +71,7 @@
 	<!-- 유저정보 가져오기 -->
 	<select id="findOneWithAuthoritiesByUsername" resultType="kr.co.smh.config.jwt.model.User">
 		<![CDATA[
-			SELECT user_id, email as username, nickname, password, korea_name, phone_num, birth_date
+			SELECT user_id, email as username, nickname, password, korea_name, phone_num, birth_date, profile_url
 			FROM user_info
 			WHERE email = #{email}
 		]]>	

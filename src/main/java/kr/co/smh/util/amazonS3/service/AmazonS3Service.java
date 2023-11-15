@@ -2,7 +2,9 @@ package kr.co.smh.util.amazonS3.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 
 import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.common.service.ByteCaculation;
+import kr.co.smh.util.amazonS3.dao.AmazonS3DAO;
 import kr.co.smh.util.amazonS3.model.FileVO;
 import lombok.RequiredArgsConstructor;
 
@@ -33,29 +36,24 @@ public class AmazonS3Service {
 	private final ByteCaculation byteCaculation;
     private final AmazonS3 amazonS3;
     private final AmazonS3Client amazonS3Client;
+    private final AmazonS3DAO amazonS3DAO;
     @Value("${cloud.aws.s3.bucket}")
     private String BUCKET;
 
     public HttpEntity<?> uploadSingleFile(MultipartFile file, FileVO vo){
-		log.info("파일 정보 --> " + vo);
-		log.info("이미지 파일 --> " + file);
-		log.info("이미지 확장자 --> " + vo.getOriginFileName());
-		log.info("이미지 파일 --> " + file.getSize());
+		Date date = new Date();
+		Timestamp timestamp = new Timestamp(date.getTime());
 		log.info("이미지 파일(변환) --> " + byteCaculation.byteCalculation(String.valueOf(file.getSize())));
-		log.info("버킷 --> " + BUCKET);
-		try {
-			log.info("이미지 파일 --> " + file.getBytes().toString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		log.info("이미지 파일 --> " + file.getContentType());
-		log.info("이미지 파일 --> " + file.getResource());
-    	
-        String saveFileName = createUUIDName(vo.getOriginFileName());
-        String originFileName = vo.getOriginFileName();
-        String fileUrl = amazonS3Client.getUrl(BUCKET, saveFileName).toString(); // 파일 경로 저장 
-        log.info("fileUrl --> " + fileUrl);
+		
+        String saveFileName = createUUIDName(vo.getOriginFileName()); // UUID 파일 이름 변환
+        String fileUrl = amazonS3Client.getUrl(BUCKET, saveFileName).toString(); // 파일 url 저장 
+        
+        vo.setSaveFileName(saveFileName);
+        vo.setFileUrl(fileUrl);
+        vo.setFileSize(file.getSize());
+        vo.setFileType(file.getContentType());
+        vo.setCreateAt(timestamp);
+        
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
@@ -63,13 +61,15 @@ public class AmazonS3Service {
         try(InputStream inputStream = file.getInputStream()){
           amazonS3.putObject(new PutObjectRequest(BUCKET, saveFileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
+          FileVO userFileVO = amazonS3DAO.insertFile(vo);
+          amazonS3DAO.insertUserProfile(userFileVO);
         } catch (IOException e){
       		return new ResponseEntity<>(
     				ResDTO.builder()
-    					  .code(0)
+    					  .code(1)
     					  .message("파일 업로드에 실패하였습니다.")
     					  .build(),
-    					  HttpStatus.BAD_REQUEST);  
+    					  HttpStatus.OK);  
         }
 
   		return new ResponseEntity<>(

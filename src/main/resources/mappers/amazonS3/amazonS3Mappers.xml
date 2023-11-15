@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smh.util.amazonS3.dao.AmazonS3DAO">
+	<!-- 파일 저장 -->
+	<select id="insertFile" resultType="kr.co.smh.util.amazonS3.model.FileVO">
+		<![CDATA[
+			INSERT INTO file 
+			(
+				user_id, 
+				origin_file_name,
+				save_file_name,
+				file_url,
+				file_size,
+				file_type,
+				create_at
+			) 
+			VALUES ( 
+				#{userId},
+				#{originFileName},
+				#{saveFileName},
+				#{fileUrl},
+				#{fileSize},
+				#{fileType},
+				#{createAt}
+			)	
+			returning user_id, file_url
+		]]>	
+	</select>
+	<update id="insertUserProfile">
+		<![CDATA[
+			UPDATE user_info
+			SET profile_url = #{fileUrl}
+			WHERE user_id = #{userId}
+		]]>	
+	</update>
+</mapper>

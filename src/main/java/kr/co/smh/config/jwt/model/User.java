@@ -30,6 +30,7 @@ public class User {
 	private String uniqueIdentifyTerms; // 고유식별정보동의여부
 	private String mobileCarrierTerms; // 통신사동의여부
 	private String role; // 권한
+	private String profileUrl; // 프로필 
 	private String createAt; // 가입시간
 	private String updateAt; // 수정시간
 	private boolean activated; 
