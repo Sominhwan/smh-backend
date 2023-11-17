@@ -61,8 +61,8 @@ public class AmazonS3Service {
         try(InputStream inputStream = file.getInputStream()){
           amazonS3.putObject(new PutObjectRequest(BUCKET, saveFileName, inputStream, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
-          FileVO userFileVO = amazonS3DAO.insertFile(vo);
-          amazonS3DAO.insertUserProfile(userFileVO);
+          FileVO userFileVO = amazonS3DAO.insertFile(vo); // 파일 업로드
+          amazonS3DAO.insertUserProfile(userFileVO); // 유저 프로필 업데이트
         } catch (IOException e){
       		return new ResponseEntity<>(
     				ResDTO.builder()
@@ -95,7 +95,7 @@ public class AmazonS3Service {
       return fileName;
     }
 
-    // 파일 다운로드
+// 파일 다운로드
 //    public ResponseEntity<UrlResource> downloadImage(String originalFilename) {
 //        UrlResource urlResource = new UrlResource(amazonS3.getUrl(bucket, originalFilename));
 //    
