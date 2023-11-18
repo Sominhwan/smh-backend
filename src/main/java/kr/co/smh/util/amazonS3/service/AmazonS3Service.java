@@ -80,7 +80,7 @@ public class AmazonS3Service {
 					  HttpStatus.OK);  
     }
 
-    // 먼저 파일 업로드시, 파일명을 난수화하기 위해 UUID 를 활용하여 난수를 돌린다.
+    // UUID 생성
     public String createUUIDName(String fileName){
         return UUID.randomUUID().toString().concat(getFileExtension(fileName));
     }
@@ -105,7 +105,7 @@ public class AmazonS3Service {
 //                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
 //                .body(urlResource);
 //    }
-
+//
 //    public void deleteFile(String fileName){
 //        amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
 //        System.out.println(bucket);

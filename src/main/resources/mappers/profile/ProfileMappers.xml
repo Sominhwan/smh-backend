@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smh.module.profile.dao.ProfileDAO">
+	<!-- 유저 업로드 이미지 가져오기 -->
+	<select id="getUploadImage" resultType="kr.co.smh.module.noticeBoard.model.ProfileVO">
+		<![CDATA[
+			select origin_file_name, file_url 
+			from file 
+			where user_id = #{userId}
+			order by create_at desc
+		]]>	
+	</select>
+	<!-- 유저 프로필 이미지 가져오기 -->
+	<select id="getProfileImage" resultType="kr.co.smh.module.noticeBoard.model.ProfileVO">
+		<![CDATA[
+			select f.origin_file_name, f.file_url
+			from user_info ui 
+			left join file f on f.file_url = ui.profile_url 
+			where ui.user_id = #{userId}
+		]]>	
+	</select>
+</mapper>
