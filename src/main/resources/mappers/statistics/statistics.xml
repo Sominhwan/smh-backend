@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smh.module.statistics.dao.StatisticsDAO">
+	<!-- 글쓴횟수, 조회수, 좋아요 수, 댓글 수 가져오기 -->
+	<select id="threadView" resultType="kr.co.smh.module.statistics.model.ThreadViewDTO">
+		<![CDATA[
+			select count(*) as write_count, 
+				   sum(view_count) as view_count, 
+				   sum(like_count) as like_count, 
+				   sum(comment_count) as comment_count 
+			from free_board 
+			where user_id = #{userId} and to_char(insert_date , 'YYYYMMDD') = #{insertDate}		
+		]]>
+	</select>
+</mapper>
