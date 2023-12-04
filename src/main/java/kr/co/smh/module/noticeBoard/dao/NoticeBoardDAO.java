@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
 
 @Repository
@@ -21,4 +23,10 @@ public interface NoticeBoardDAO {
 	List<NoticeBoardVO> noticeBoardDetail(@Param("id") int id);	
 	// 공지사항 상세보기 공지사항 리스트
 	List<NoticeBoardVO> noticeBoardDetailList(@Param("id") int id);
+	// 공지사항 댓글 가져오기
+	List<NoticeBoardCommentDTO> noticeBoardCommentList(NoticeBoardCommentVO noticeBoardCommentVO);
+	// 공지사항 댓글 작성
+	int noticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
+	// 공지사항 댓글 삭제하기
+	int deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 }

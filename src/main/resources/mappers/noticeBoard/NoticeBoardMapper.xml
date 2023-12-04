@@ -10,7 +10,7 @@
 			views_count,
 			like_count,
 			comment_count,
-			insert_date
+			create_at
 		)
 		VALUES(
 			#{title},
@@ -24,7 +24,7 @@
 	</insert>
 	<!-- 공지사항 긂목록 -->
 	<select id="noticeBoardList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
-		SELECT notice_id, title, views_count, like_count, comment_count, writer, TO_CHAR(insert_date,'YYYY.MM.DD HH24:MI') as insert_date
+		SELECT notice_id, title, views_count, like_count, comment_count, writer, TO_CHAR(create_at,'YYYY.MM.DD HH24:MI') as create_at
 		FROM notice_board
 		<if test='category == "최신글순"'>
 		ORDER BY notice_id DESC
@@ -45,8 +45,45 @@
 	</select>
 	<!-- 공지사항 상세페이지 정보 -->
 	<select id="noticeBoardDetail" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
-		SELECT title, writer, content, like_count, comment_count, TO_CHAR(insert_date,'YYYY.MM.DD HH24:MI') as insert_date
+		SELECT title, writer, content, like_count, comment_count, TO_CHAR(create_at,'YYYY.MM.DD HH24:MI') as create_at
 		FROM notice_board 
 		WHERE notice_id = #{id}
 	</select>
+	<!-- 공지사항 댓글 가져오기 -->
+	<select id="noticeBoardCommentList" resultType="kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO">
+		<![CDATA[
+			select nbc.notice_comment_id, nbc.notice_id, nbc.user_id, ui.nickname, nbc.comment, to_char(nbc.create_at, 'YYYY.MM.DD') as create_at, ui.profile_url
+			from notice_board_comment nbc
+			left join user_info ui on ui.user_id = nbc.user_id
+			where nbc.notice_id = #{noticeId} and nbc.del_yn = 'N'
+			order by nbc.create_at desc
+		]]>
+	</select>
+	<!-- 공지사항 댓글 작성 -->
+	<insert id="noticeBoardComment" parameterType="kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO">
+		<![CDATA[
+			insert into notice_board_comment(
+				notice_id,
+				user_id,
+				comment,
+				create_at,
+				del_yn
+			)
+			values(
+				#{noticeId},
+				#{userId},
+				#{comment},
+				now(),
+				'N'
+			)
+		]]>
+	</insert>
+	<!-- 공지사항 댓글 삭제하기 -->
+	<update id="deleteNoticeBoardComment">
+		<![CDATA[
+			update notice_board_comment
+			set del_yn = 'Y'
+			where notice_comment_id = #{noticeCommentId}
+		]]>
+	</update>
 </mapper>

@@ -19,7 +19,7 @@ public class NoticeBoardVO {
 	private int viewsCount;
 	private int likeCount;
 	private int commentCount;
-	private String insertDate;
-	private String updateDate;
-	private String deleteDate;	
+	private String createAt;
+	private String updateAt;
+	private String delYn;	
 }
