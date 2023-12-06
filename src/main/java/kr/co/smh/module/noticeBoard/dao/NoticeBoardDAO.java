@@ -27,6 +27,8 @@ public interface NoticeBoardDAO {
 	List<NoticeBoardCommentDTO> noticeBoardCommentList(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 댓글 작성
 	int noticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
+	// 공지사항 댓글 수정
+	int updateNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 댓글 삭제하기
 	int deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 }

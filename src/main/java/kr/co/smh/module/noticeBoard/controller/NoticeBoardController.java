@@ -3,16 +3,20 @@ package kr.co.smh.module.noticeBoard.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.service.NoticeBoardService;
@@ -63,7 +67,12 @@ public class NoticeBoardController {
 	public HttpEntity<?> noticeBoardComment(@Nullable @RequestBody NoticeBoardCommentVO noticeBoardCommentVO) {
 		return noticeBoardService.noticeBoardComment(noticeBoardCommentVO);
 	}
-	// 공지사항 댓글 삭제하기
+	// 공지사항 댓글 수정하기
+	@PutMapping(value="/comment")
+	public HttpEntity<?> updateNoticeBoardComment(@Nullable @RequestBody NoticeBoardCommentVO noticeBoardCommentVO) {
+		return noticeBoardService.updateNoticeBoardComment(noticeBoardCommentVO);
+	}
+	// 공지사항 댓글 삭제하기 
 	@DeleteMapping(value="/comment")
 	public HttpEntity<?> deleteNoticeBoardComment(@Nullable @RequestBody NoticeBoardCommentVO noticeBoardCommentVO) {
 		return noticeBoardService.deleteNoticeBoardComment(noticeBoardCommentVO);

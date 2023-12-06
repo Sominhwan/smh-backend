@@ -121,6 +121,17 @@ public class NoticeBoardService {
 					  .build(),
 					  HttpStatus.OK);
 	}
+	// 공지사항 댓글 수정
+	public HttpEntity<?> updateNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO) {
+		int result = noticeBoardDAO.updateNoticeBoardComment(noticeBoardCommentVO);
+		log.info("댓글 수정 결과 --> " + result);
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("댓글 작성 수정완료.")
+					  .build(),
+					  HttpStatus.OK);
+	}
 	// 공지사항 댓글 삭제
 	public HttpEntity<?> deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO) {
 		int result = noticeBoardDAO.deleteNoticeBoardComment(noticeBoardCommentVO);

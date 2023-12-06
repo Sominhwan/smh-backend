@@ -78,11 +78,23 @@
 			)
 		]]>
 	</insert>
+	<!-- 공지사항 댓글 수정 -->
+	<update id="updateNoticeBoardComment">
+		<![CDATA[
+			update notice_board_comment
+			set comment = #{comment},
+				update_at = now()
+			where notice_comment_id = #{noticeCommentId}
+			  and notice_id = #{noticeId}
+			  and user_id = #{userId}
+		]]>
+	</update>
 	<!-- 공지사항 댓글 삭제하기 -->
 	<update id="deleteNoticeBoardComment">
 		<![CDATA[
 			update notice_board_comment
-			set del_yn = 'Y'
+			set del_yn = 'Y',
+				delete_at = now()
 			where notice_comment_id = #{noticeCommentId}
 		]]>
 	</update>
