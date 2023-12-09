@@ -98,4 +98,23 @@
 			where notice_comment_id = #{noticeCommentId}
 		]]>
 	</update>
+	<!-- 공지사항 좋아요 활성화 -->
+	<select id="likeNoticeBoard" resultType="int">
+		<![CDATA[
+			insert into notice_board_like(
+				notice_id,
+				user_id,
+				like_check	
+			)
+			values(
+				#{noticeId},
+				#{userId},
+				true	
+			);
+			update notice_board
+			set like_count = like_count + 1
+			where notice_id = #{noticeId}
+			returning like_count;
+		]]>
+	</select>
 </mapper>

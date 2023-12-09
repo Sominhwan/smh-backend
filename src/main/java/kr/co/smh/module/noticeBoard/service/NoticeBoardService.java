@@ -16,6 +16,7 @@ import kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
 import lombok.RequiredArgsConstructor;
 
@@ -140,6 +141,17 @@ public class NoticeBoardService {
 				ResDTO.builder()
 					  .code(0)
 					  .message("댓글이 삭제되었습니다.")
+					  .build(),
+					  HttpStatus.OK);
+	}
+	// 공지사항 좋아요 활성화
+	public HttpEntity<?> likeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO) {
+		int likeCount = noticeBoardDAO.likeNoticeBoard(noticeBoardLikeVO);
+		log.info("좋아요 개수 --> " + likeCount);
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("댓글 작성 수정완료.")
 					  .build(),
 					  HttpStatus.OK);
 	}

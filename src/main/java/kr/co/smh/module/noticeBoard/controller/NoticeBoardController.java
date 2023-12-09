@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
 import kr.co.smh.module.noticeBoard.service.NoticeBoardService;
 import lombok.RequiredArgsConstructor;
 
@@ -76,5 +78,10 @@ public class NoticeBoardController {
 	@DeleteMapping(value="/comment")
 	public HttpEntity<?> deleteNoticeBoardComment(@Nullable @RequestBody NoticeBoardCommentVO noticeBoardCommentVO) {
 		return noticeBoardService.deleteNoticeBoardComment(noticeBoardCommentVO);
+	}
+	// 공지사항 좋아요 활성화
+	@PostMapping(value="/like")
+	public HttpEntity<?> likeNoticeBoard(@Nullable @RequestBody NoticeBoardLikeVO noticeBoardLikeVO) {
+		return noticeBoardService.likeNoticeBoard(noticeBoardLikeVO);
 	}
 }
