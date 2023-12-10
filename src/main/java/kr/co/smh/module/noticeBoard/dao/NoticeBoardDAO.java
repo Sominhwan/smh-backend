@@ -21,9 +21,11 @@ public interface NoticeBoardDAO {
 	// 공지사항 전체글 개수
 	Integer noticeBoardTotalPage();
 	// 공지사항 상세보기 정보 가져오기
-	List<NoticeBoardVO> noticeBoardDetail(@Param("id") int id);	
+	NoticeBoardVO noticeBoardDetail(NoticeBoardVO noticeBoardVO);	
 	// 공지사항 상세보기 공지사항 리스트
 	List<NoticeBoardVO> noticeBoardDetailList(@Param("id") int id);
+	// 공지사항 상세페이지 삭제하기
+	int deleteNoticeBoardDetail(NoticeBoardVO noticeBoardVO);
 	// 공지사항 댓글 가져오기
 	List<NoticeBoardCommentDTO> noticeBoardCommentList(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 댓글 작성
@@ -34,4 +36,6 @@ public interface NoticeBoardDAO {
 	int deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 좋아요 활성화 (좋아요 개수 리턴)
 	int likeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO);
+	// 공지사항 좋아요 비활성화 (좋아요 개수 리턴)
+	int unlikeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO);
 }

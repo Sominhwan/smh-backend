@@ -74,8 +74,8 @@ public class NoticeBoardService {
 						  HttpStatus.OK);
 	}	
 	// 공지사항 상제페이지 정보
-	public HttpEntity<?> noticeBoardDetailSelect(String id){
-		List<NoticeBoardVO> noticeBoardDetail = noticeBoardDAO.noticeBoardDetail(Integer.parseInt(id));
+	public HttpEntity<?> noticeBoardDetailSelect(NoticeBoardVO noticeBoardVO){
+		NoticeBoardVO noticeBoardDetail = noticeBoardDAO.noticeBoardDetail(noticeBoardVO);
 		log.info("noticeBoardDetail --> " + noticeBoardDetail);
 		
 		return new ResponseEntity<>(
@@ -99,6 +99,17 @@ public class NoticeBoardService {
 						  .build(),
 						  HttpStatus.OK);
 	}	
+	// 공지사항 상세페이지 삭제하기
+	public HttpEntity<?> deleteNoticeBoardDetail(NoticeBoardVO noticeBoardVO) {
+		int result = noticeBoardDAO.deleteNoticeBoardDetail(noticeBoardVO);
+		log.info("공지사항 삭제 결과 --> " + result);
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("공지사항 상세페이지를 삭제했습니다.")
+					  .build(),
+					  HttpStatus.OK);
+	}
 	// 공지사항 댓글 가져오기
 	public HttpEntity<?> noticeBoardCommentList(NoticeBoardCommentVO noticeBoardCommentVO) {
 		List<NoticeBoardCommentDTO> noticeBoardCommentVOList = noticeBoardDAO.noticeBoardCommentList(noticeBoardCommentVO);
@@ -147,11 +158,24 @@ public class NoticeBoardService {
 	// 공지사항 좋아요 활성화
 	public HttpEntity<?> likeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO) {
 		int likeCount = noticeBoardDAO.likeNoticeBoard(noticeBoardLikeVO);
-		log.info("좋아요 개수 --> " + likeCount);
+		log.info("공지사항 좋아요 개수 --> " + likeCount);
 		return new ResponseEntity<>(
 				ResDTO.builder()
 					  .code(0)
-					  .message("댓글 작성 수정완료.")
+					  .message("좋아요 활성화.")
+					  .data(likeCount)
+					  .build(),
+					  HttpStatus.OK);
+	}
+	// 공지사항 좋아요 비활성화
+	public HttpEntity<?> unlikeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO) {
+		int likeCount = noticeBoardDAO.unlikeNoticeBoard(noticeBoardLikeVO);
+		log.info("공지사항 좋아요 개수 --> " + likeCount);
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("좋아요 비활성화.")
+					  .data(likeCount)
 					  .build(),
 					  HttpStatus.OK);
 	}

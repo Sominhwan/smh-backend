@@ -49,15 +49,20 @@ public class NoticeBoardController {
 	}
 	// 공지사항 상세페이지 정보
 	@GetMapping(value="/detail/select")
-	public HttpEntity<?> noticeBoardDetail(@Nullable @RequestParam("id") String id) {
-		log.info("noticeBoardDetail --> id: " + id);
-		return noticeBoardService.noticeBoardDetailSelect(id);
+	public HttpEntity<?> noticeBoardDetail(@Nullable @ModelAttribute NoticeBoardVO noticeBoardVO) {
+		log.info("noticeBoardDetail --> " + noticeBoardVO.getNoticeId());
+		return noticeBoardService.noticeBoardDetailSelect(noticeBoardVO);
 	}
 	// 공지사항 상세페이지 공지사항 리스트 
 	@GetMapping(value="/detail/list")
 	public HttpEntity<?> noticeBoardDetailList(@Nullable @RequestParam("id") String id) {
 		log.info("noticeBoardDetailList --> id: " + id);
 		return noticeBoardService.noticeBoardDetailList(id);
+	}
+	// 공지사항 상세페이지 삭제하기
+	@DeleteMapping(value="/detail")
+	public HttpEntity<?> deleteNoticeBoardDetail(@Nullable @RequestBody NoticeBoardVO noticeBoardVO) {
+		return noticeBoardService.deleteNoticeBoardDetail(noticeBoardVO);
 	}
 	// 공지사항 댓글 가져오기
 	@GetMapping(value="/comment")
@@ -83,5 +88,10 @@ public class NoticeBoardController {
 	@PostMapping(value="/like")
 	public HttpEntity<?> likeNoticeBoard(@Nullable @RequestBody NoticeBoardLikeVO noticeBoardLikeVO) {
 		return noticeBoardService.likeNoticeBoard(noticeBoardLikeVO);
+	}
+	// 공지사항 좋아요 비활성화
+	@PostMapping(value="/unlike")
+	public HttpEntity<?> unlikeNoticeBoard(@Nullable @RequestBody NoticeBoardLikeVO noticeBoardLikeVO) {
+		return noticeBoardService.unlikeNoticeBoard(noticeBoardLikeVO);
 	}
 }

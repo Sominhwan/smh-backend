@@ -45,10 +45,49 @@
 	</select>
 	<!-- 공지사항 상세페이지 정보 -->
 	<select id="noticeBoardDetail" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
-		SELECT title, writer, content, like_count, comment_count, TO_CHAR(create_at,'YYYY.MM.DD HH24:MI') as create_at
-		FROM notice_board 
-		WHERE notice_id = #{id}
+		<if test='userId != null'>
+			<![CDATA[
+				select nb.user_id,
+					   nb.title, 
+					   nb.writer, 
+					   nb.content, 
+					   nb.like_count, 
+					   nbl.like_check, 
+					   nb.comment_count, 
+					   to_char(nb.create_at,'YYYY.MM.DD HH24:MI') as create_at
+				from notice_board nb
+				left join notice_board_like nbl on nbl.notice_id = #{noticeId} and nbl.user_id = #{userId}
+				where nb.notice_id = #{noticeId}
+			]]>
+		</if>
+		<if test='userId == null'>
+			<![CDATA[
+				select nb.user_id,
+					   nb.title, 
+					   nb.writer, 
+					   nb.content, 
+					   nb.like_count, 
+					   nb.comment_count, 
+					   to_char(nb.create_at,'YYYY.MM.DD HH24:MI') as create_at
+				from notice_board nb
+				where nb.notice_id = #{noticeId}
+			]]>
+		</if>		
 	</select>
+	<!-- 공지사항 상세페이지 삭제하기 -->
+	<update id="deleteNoticeBoardDetail">
+		<![CDATA[
+			update notice_board_comment
+			set del_yn = 'Y',
+			    delete_at = now()
+			where notice_id = #{noticeId};
+			
+			update notice_board 
+			set del_yn = 'Y',
+			    delete_at = now()
+			where notice_id = #{noticeId} and user_id = #{userId};	
+		]]>
+	</update>
 	<!-- 공지사항 댓글 가져오기 -->
 	<select id="noticeBoardCommentList" resultType="kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO">
 		<![CDATA[
@@ -117,4 +156,17 @@
 			returning like_count;
 		]]>
 	</select>
+	<!-- 공지사항 좋아요 비활성화 -->
+	<select id="unlikeNoticeBoard" resultType="int">
+		<![CDATA[
+			delete from notice_board_like
+			where notice_id = #{noticeId}
+			  and user_id = #{userId};
+			  
+			update notice_board
+			set like_count = like_count - 1
+			where notice_id = #{noticeId}
+			returning like_count;
+		]]>
+	</select>	
 </mapper>

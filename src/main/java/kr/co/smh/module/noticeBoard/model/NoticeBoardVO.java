@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class NoticeBoardVO {
 	private int noticeId;
+	private Integer userId;
 	private String title;
 	private String writer;
 	private String content;
@@ -22,4 +23,6 @@ public class NoticeBoardVO {
 	private String createAt;
 	private String updateAt;
 	private String delYn;	
+	
+	private boolean likeCheck;
 }
