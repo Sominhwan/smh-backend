@@ -5,6 +5,7 @@
 	<select id="noticeBoardList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
 		SELECT notice_id, title, like_count, comment_count, writer, TO_CHAR(create_at,'YYYY.MM.DD HH24:MI') as create_at
 		FROM notice_board
+		WHERE del_yn = 'N'
 		ORDER BY notice_id DESC
 		limit 5
 	</select>

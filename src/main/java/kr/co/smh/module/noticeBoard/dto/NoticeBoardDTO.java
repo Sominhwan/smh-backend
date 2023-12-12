@@ -16,6 +16,7 @@ public class NoticeBoardDTO {
 	public static class ReqNoticeBoard{
 		private int noticeId;
 		private String title;
+		private Integer userId;
 		private String writer;
 		private String content;
 		private int viewsCount;
@@ -28,6 +29,7 @@ public class NoticeBoardDTO {
 					.title(title)
 					.writer(writer)
 					.content(content)
+					.userId(userId)
 					.build();			
 		}
 	}

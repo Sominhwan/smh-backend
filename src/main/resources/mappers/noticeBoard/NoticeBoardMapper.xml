@@ -4,28 +4,51 @@
 	<!-- 공지사항 글쓰기 -->
 	<insert id="noticeBoardInsert" parameterType="kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO">
 		INSERT INTO notice_board(
+			user_id,
 			title,
 			writer,
 			content,
 			views_count,
 			like_count,
 			comment_count,
-			create_at
+			create_at,
+			del_yn
 		)
 		VALUES(
+			#{userId},
 			#{title},
 			#{writer},
 			#{content},
 			0,
 			0,
 			0,
-			NOW()
+			NOW(),
+			'N'
 		)
 	</insert>
-	<!-- 공지사항 긂목록 -->
+	<!-- 글 가져오기 -->
+	<select id="boardCotent" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
+		<if test='category == "공지사항"'>
+			<![CDATA[
+				select title, content
+				from notice_board 
+				where notice_id = #{noticeId} and user_id = #{userId}		
+			]]>
+		</if>
+		<if test='category == "자유게시판"'>
+			<![CDATA[
+			]]>
+		</if>
+		<if test='category == "주요소식"'>
+			<![CDATA[
+			]]>
+		</if>
+	</select>
+	<!-- 공지사항 글 목록 -->
 	<select id="noticeBoardList" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
 		SELECT notice_id, title, views_count, like_count, comment_count, writer, TO_CHAR(create_at,'YYYY.MM.DD HH24:MI') as create_at
 		FROM notice_board
+	    WHERE del_yn = 'N'
 		<if test='category == "최신글순"'>
 		ORDER BY notice_id DESC
 		</if>
@@ -99,8 +122,8 @@
 		]]>
 	</select>
 	<!-- 공지사항 댓글 작성 -->
-	<insert id="noticeBoardComment" parameterType="kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO">
-		<![CDATA[
+	<select id="noticeBoardComment" parameterType="kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO">
+		<![CDATA[	
 			insert into notice_board_comment(
 				notice_id,
 				user_id,
@@ -114,9 +137,12 @@
 				#{comment},
 				now(),
 				'N'
-			)
+			);
+			update notice_board
+			set comment_count = comment_count + 1
+			where notice_id = #{noticeId};	
 		]]>
-	</insert>
+	</select>
 	<!-- 공지사항 댓글 수정 -->
 	<update id="updateNoticeBoardComment">
 		<![CDATA[
@@ -131,6 +157,10 @@
 	<!-- 공지사항 댓글 삭제하기 -->
 	<update id="deleteNoticeBoardComment">
 		<![CDATA[
+			update notice_board
+			set comment_count = comment_count -1
+			where notice_id = #{noticeId};	
+			
 			update notice_board_comment
 			set del_yn = 'Y',
 				delete_at = now()

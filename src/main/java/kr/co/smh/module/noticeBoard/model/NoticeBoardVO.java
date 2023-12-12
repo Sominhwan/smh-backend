@@ -24,5 +24,7 @@ public class NoticeBoardVO {
 	private String updateAt;
 	private String delYn;	
 	
+	
+	private String category;
 	private boolean likeCheck;
 }

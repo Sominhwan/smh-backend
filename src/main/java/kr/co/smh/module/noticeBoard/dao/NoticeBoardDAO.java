@@ -16,6 +16,8 @@ import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
 public interface NoticeBoardDAO {
 	// 공지사항 글쓰기
 	Integer noticeBoardInsert(NoticeBoardVO vo);
+	// 글 가져오기
+	NoticeBoardVO boardCotent(NoticeBoardVO noticeBoardVO);
 	// 공지사항 글목록 가져오기
 	List<NoticeBoardVO> noticeBoardList(@Param("offset") int offset, @Param("rowSize") int rowSize, @Param("category") String category);
 	// 공지사항 전체글 개수
@@ -29,11 +31,11 @@ public interface NoticeBoardDAO {
 	// 공지사항 댓글 가져오기
 	List<NoticeBoardCommentDTO> noticeBoardCommentList(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 댓글 작성
-	int noticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
+	void noticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 댓글 수정
 	int updateNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 댓글 삭제하기
-	int deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
+	void deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO);
 	// 공지사항 좋아요 활성화 (좋아요 개수 리턴)
 	int likeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO);
 	// 공지사항 좋아요 비활성화 (좋아요 개수 리턴)

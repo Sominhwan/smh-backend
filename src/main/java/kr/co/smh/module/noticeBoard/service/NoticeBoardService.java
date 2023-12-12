@@ -36,6 +36,18 @@ public class NoticeBoardService {
 						  .build(),
 						  HttpStatus.OK);
 	}	
+	// 글 가져오기
+	public HttpEntity<?> boardCotent(NoticeBoardVO noticeBoardVO) {
+		NoticeBoardVO vo = noticeBoardDAO.boardCotent(noticeBoardVO);
+
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("게시물을 가져왔습니다.")
+					  .data(vo)
+					  .build(),
+					  HttpStatus.OK);
+	}
 	// 공지사항 전체페이지 수 
 	public HttpEntity<?> noticeBoardPage(){	
 		Integer totalPage = noticeBoardDAO.noticeBoardTotalPage();
@@ -124,8 +136,8 @@ public class NoticeBoardService {
 	}
 	// 공지사항 댓글 작성
 	public HttpEntity<?> noticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO) {
-		int result = noticeBoardDAO.noticeBoardComment(noticeBoardCommentVO);
-		log.info("댓글 작성 결과 --> " + result);
+		noticeBoardDAO.noticeBoardComment(noticeBoardCommentVO);
+		//log.info("댓글 작성 결과 --> " + result);
 		return new ResponseEntity<>(
 				ResDTO.builder()
 					  .code(0)
@@ -146,8 +158,8 @@ public class NoticeBoardService {
 	}
 	// 공지사항 댓글 삭제
 	public HttpEntity<?> deleteNoticeBoardComment(NoticeBoardCommentVO noticeBoardCommentVO) {
-		int result = noticeBoardDAO.deleteNoticeBoardComment(noticeBoardCommentVO);
-		log.info("댓글 삭제 결과 --> " + result);
+		noticeBoardDAO.deleteNoticeBoardComment(noticeBoardCommentVO);
+		//log.info("댓글 삭제 결과 --> " + result);
 		return new ResponseEntity<>(
 				ResDTO.builder()
 					  .code(0)
