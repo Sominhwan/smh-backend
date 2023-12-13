@@ -36,6 +36,17 @@ public class NoticeBoardService {
 						  .build(),
 						  HttpStatus.OK);
 	}	
+	// 글 수정하기
+	public HttpEntity<?> noticeBoardUpdate(NoticeBoardVO noticeBoardVO) {
+		int result = noticeBoardDAO.noticeBoardUpdate(noticeBoardVO);
+		log.info("글 수정 결과 -->" + result);
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("게시물이 수정되었습니다.")
+					  .build(),
+					  HttpStatus.OK);
+	}
 	// 글 가져오기
 	public HttpEntity<?> boardCotent(NoticeBoardVO noticeBoardVO) {
 		NoticeBoardVO vo = noticeBoardDAO.boardCotent(noticeBoardVO);

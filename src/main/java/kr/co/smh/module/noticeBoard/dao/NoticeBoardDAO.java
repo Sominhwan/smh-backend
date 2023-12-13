@@ -16,6 +16,8 @@ import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
 public interface NoticeBoardDAO {
 	// 공지사항 글쓰기
 	Integer noticeBoardInsert(NoticeBoardVO vo);
+	// 글 수정하기
+	int noticeBoardUpdate(NoticeBoardVO noticeBoardVO);
 	// 글 가져오기
 	NoticeBoardVO boardCotent(NoticeBoardVO noticeBoardVO);
 	// 공지사항 글목록 가져오기

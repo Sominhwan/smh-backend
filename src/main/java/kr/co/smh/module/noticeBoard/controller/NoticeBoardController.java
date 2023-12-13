@@ -3,6 +3,8 @@ package kr.co.smh.module.noticeBoard.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
@@ -32,6 +35,11 @@ public class NoticeBoardController {
 	public HttpEntity<?> noticeBoardWrite(@Nullable @RequestBody NoticeBoardDTO.ReqNoticeBoard reqDTO) {
 		log.info("noticeBoardWrite --> " + reqDTO);
 		return noticeBoardService.noticeBoardWrite(reqDTO);			
+	}
+	// 글 수정하기
+	@PutMapping(value="/update")
+	public HttpEntity<?> noticeBoardUpdate(@Nullable @RequestBody NoticeBoardVO noticeBoardVO) {
+		return noticeBoardService.noticeBoardUpdate(noticeBoardVO);
 	}
 	// 글 가져오기
 	@GetMapping(value="/content")

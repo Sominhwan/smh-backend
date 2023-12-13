@@ -26,6 +26,17 @@
 			'N'
 		)
 	</insert>
+	<!-- 글 수정하기 -->
+	<update id="noticeBoardUpdate">
+		<![CDATA[	
+			update notice_board
+			set title = #{title},
+				writer = #{writer},
+				content = #{content},
+				update_at = now()
+			where notice_id = #{noticeId} and user_id = #{userId}	
+		]]>
+	</update>
 	<!-- 글 가져오기 -->
 	<select id="boardCotent" resultType="kr.co.smh.module.noticeBoard.model.NoticeBoardVO">
 		<if test='category == "공지사항"'>
