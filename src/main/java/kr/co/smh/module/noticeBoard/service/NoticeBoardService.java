@@ -15,6 +15,7 @@ import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
@@ -199,6 +200,17 @@ public class NoticeBoardService {
 					  .code(0)
 					  .message("좋아요 비활성화.")
 					  .data(likeCount)
+					  .build(),
+					  HttpStatus.OK);
+	}
+	// 공지사항 댓글 좋아요 활성화 
+	// TODO 20231216 수정할 것
+	public HttpEntity<?> commentLikeNoticeBoard(NoticeBoardCommentLikeVO noticeBoardCommentLikeVO) {
+		log.info("공지사항 댓글 좋아요 --> " + noticeBoardCommentLikeVO);
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("댓글 좋아요 비활성화.")
 					  .build(),
 					  HttpStatus.OK);
 	}

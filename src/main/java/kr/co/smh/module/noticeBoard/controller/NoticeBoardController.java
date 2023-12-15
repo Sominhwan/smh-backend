@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
@@ -104,4 +105,10 @@ public class NoticeBoardController {
 	public HttpEntity<?> unlikeNoticeBoard(@Nullable @RequestBody NoticeBoardLikeVO noticeBoardLikeVO) {
 		return noticeBoardService.unlikeNoticeBoard(noticeBoardLikeVO);
 	}
+	// 공지사항 댓글 좋아요 활성화
+	@PostMapping(value="/comment/like")
+	public HttpEntity<?> commentLikeNoticeBoard(@Nullable @RequestBody NoticeBoardCommentLikeVO noticeBoardCommentLikeVO) {
+		return noticeBoardService.commentLikeNoticeBoard(noticeBoardCommentLikeVO);
+	}
+	// 공지사항 댓글 싫어요 활성화
 }
