@@ -11,4 +11,8 @@ public class NoticeBoardCommentDTO {
 	private String comment;
 	private String createAt;
 	private String profileUrl;
+	private int likeCount;
+	private int unlikeCount;
+	private boolean likeFlag;
+	private boolean unlikeFlag;
 }

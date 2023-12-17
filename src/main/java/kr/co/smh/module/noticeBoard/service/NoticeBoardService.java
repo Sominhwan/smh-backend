@@ -16,6 +16,7 @@ import kr.co.smh.module.noticeBoard.dao.NoticeBoardDAO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentLikeVO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentUnlikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
@@ -204,14 +205,31 @@ public class NoticeBoardService {
 					  HttpStatus.OK);
 	}
 	// 공지사항 댓글 좋아요 활성화 
-	// TODO 20231216 수정할 것
 	public HttpEntity<?> commentLikeNoticeBoard(NoticeBoardCommentLikeVO noticeBoardCommentLikeVO) {
 		log.info("공지사항 댓글 좋아요 --> " + noticeBoardCommentLikeVO);
+		if(noticeBoardCommentLikeVO.getFlag() == null) {
+            noticeBoardDAO.noticeBoardCommentLikeUp(noticeBoardCommentLikeVO);
+		}
+
 		return new ResponseEntity<>(
 				ResDTO.builder()
 					  .code(0)
-					  .message("댓글 좋아요 비활성화.")
+					  .message("댓글 좋아요 활성화.")
 					  .build(),
 					  HttpStatus.OK);
+	}
+	// 공지사항 댓글 싫어요 활성화
+	public HttpEntity<?> commentUnlikeNoticeBoard(NoticeBoardCommentUnlikeVO noticeBoardCommentUnlikeVO) {
+		log.info("공지사항 댓글 싫어요 --> " + noticeBoardCommentUnlikeVO);
+		if(noticeBoardCommentUnlikeVO.getFlag() == null) {
+            noticeBoardDAO.noticeBoardCommentUnlikeUp(noticeBoardCommentUnlikeVO);
+		}
+		
+		return new ResponseEntity<>(
+				ResDTO.builder()
+					  .code(0)
+					  .message("댓글 싫어요 활성화.")
+					  .build(),
+					  HttpStatus.OK);	
 	}
 }

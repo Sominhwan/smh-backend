@@ -125,9 +125,21 @@
 	<!-- 공지사항 댓글 가져오기 -->
 	<select id="noticeBoardCommentList" resultType="kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO">
 		<![CDATA[
-			select nbc.notice_comment_id, nbc.notice_id, nbc.user_id, ui.nickname, nbc.comment, to_char(nbc.create_at, 'YYYY.MM.DD') as create_at, ui.profile_url
+			select nbc.notice_comment_id, 
+				   nbc.notice_id, 
+				   nbc.user_id, 
+				   ui.nickname, 
+				   nbc.comment, 
+				   to_char(nbc.create_at, 'YYYY.MM.DD') as create_at, 
+				   ui.profile_url,
+				   nbc.like_count,
+				   nbc.unlike_count,
+	   			   case when nbcl.notice_comment_like_id is not null then true else false end as like_flag,
+	   			   case when nbcu.notice_comment_unlike_id is not null then true else false end as unlike_flag
 			from notice_board_comment nbc
 			left join user_info ui on ui.user_id = nbc.user_id
+			left join notice_board_comment_like nbcl on nbcl.notice_comment_id = nbc.notice_comment_id and nbcl.user_id = #{userId}
+			left join notice_board_comment_unlike nbcu on nbcu.notice_comment_id = nbc.notice_comment_id and nbcu.user_id = #{userId}
 			where nbc.notice_id = #{noticeId} and nbc.del_yn = 'N'
 			order by nbc.create_at desc
 		]]>
@@ -140,14 +152,18 @@
 				user_id,
 				comment,
 				create_at,
-				del_yn
+				del_yn,
+				like_count,
+				unlike_count
 			)
 			values(
 				#{noticeId},
 				#{userId},
 				#{comment},
 				now(),
-				'N'
+				'N',
+				0,
+				0
 			);
 			update notice_board
 			set comment_count = comment_count + 1
@@ -210,4 +226,46 @@
 			returning like_count;
 		]]>
 	</select>	
+	<!-- 공지사항 댓글 좋아요 활성화 -->
+	<select id="noticeBoardCommentLikeUp">
+		<![CDATA[
+			insert into notice_board_comment_like(
+				notice_id,
+				notice_comment_id,
+				user_id,
+				create_at
+			)
+			values(
+				#{noticeId},
+				#{noticeCommentId},
+				#{userId},
+				now()
+			);
+			update notice_board_comment
+			set like_count = like_count + 1
+			where notice_comment_id = #{noticeCommentId}
+			  and notice_id = #{noticeId};
+		]]>	
+	</select>
+	<!-- 공지사항 댓글 싫어요 활성화 -->
+	<select id="noticeBoardCommentUnlikeUp">
+		<![CDATA[
+			insert into notice_board_comment_unlike(
+				notice_id,
+				notice_comment_id,
+				user_id,
+				create_at
+			)
+			values(
+				#{noticeId},
+				#{noticeCommentId},
+				#{userId},
+				now()
+			);
+			update notice_board_comment
+			set unlike_count = unlike_count + 1
+			where notice_comment_id = #{noticeCommentId}
+			  and notice_id = #{noticeId};
+		]]>	
+	</select>
 </mapper>

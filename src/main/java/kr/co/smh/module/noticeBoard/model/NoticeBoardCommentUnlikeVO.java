@@ -9,4 +9,6 @@ public class NoticeBoardCommentUnlikeVO {
 	private Integer noticeCommentId;
 	private Integer userId;
 	private String createAt;
+	
+	private Integer flag;
 }

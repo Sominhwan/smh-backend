@@ -12,4 +12,6 @@ public class NoticeBoardCommentVO {
 	private String updateAt;
 	private String delYn;
 	private String deleteAt;
+	private int likeCount;
+	private int unlikeCount;
 }

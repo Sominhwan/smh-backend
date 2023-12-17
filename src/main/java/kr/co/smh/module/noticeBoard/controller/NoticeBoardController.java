@@ -3,8 +3,6 @@ package kr.co.smh.module.noticeBoard.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.co.smh.common.dto.ResDTO;
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardDTO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentLikeVO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentUnlikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
@@ -111,4 +109,8 @@ public class NoticeBoardController {
 		return noticeBoardService.commentLikeNoticeBoard(noticeBoardCommentLikeVO);
 	}
 	// 공지사항 댓글 싫어요 활성화
+	@PostMapping(value="/comment/unlike")
+	public HttpEntity<?> commentUnlikeNoticeBoard(@Nullable @RequestBody NoticeBoardCommentUnlikeVO noticeBoardCommentUnlikeVO) {
+		return noticeBoardService.commentUnlikeNoticeBoard(noticeBoardCommentUnlikeVO);
+	}
 }

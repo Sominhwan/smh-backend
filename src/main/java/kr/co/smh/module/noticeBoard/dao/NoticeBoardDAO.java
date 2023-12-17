@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import kr.co.smh.module.noticeBoard.dto.NoticeBoardCommentDTO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentLikeVO;
+import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentUnlikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardCommentVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardLikeVO;
 import kr.co.smh.module.noticeBoard.model.NoticeBoardVO;
@@ -42,4 +44,8 @@ public interface NoticeBoardDAO {
 	int likeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO);
 	// 공지사항 좋아요 비활성화 (좋아요 개수 리턴)
 	int unlikeNoticeBoard(NoticeBoardLikeVO noticeBoardLikeVO);
+	// 공지사항 댓글 좋아요 활성
+	void noticeBoardCommentLikeUp(NoticeBoardCommentLikeVO noticeBoardCommentLikeVO);
+	// 공지사항 댓글 싫어요 활성
+	void noticeBoardCommentUnlikeUp(NoticeBoardCommentUnlikeVO noticeBoardCommentUnlikeVO);
 }
