@@ -207,9 +207,7 @@ public class NoticeBoardService {
 	// 공지사항 댓글 좋아요 활성화 
 	public HttpEntity<?> commentLikeNoticeBoard(NoticeBoardCommentLikeVO noticeBoardCommentLikeVO) {
 		log.info("공지사항 댓글 좋아요 --> " + noticeBoardCommentLikeVO);
-		if(noticeBoardCommentLikeVO.getFlag() == null) {
-            noticeBoardDAO.noticeBoardCommentLikeUp(noticeBoardCommentLikeVO);
-		}
+		noticeBoardDAO.noticeBoardCommentLikeUp(noticeBoardCommentLikeVO);	
 
 		return new ResponseEntity<>(
 				ResDTO.builder()
@@ -221,9 +219,7 @@ public class NoticeBoardService {
 	// 공지사항 댓글 싫어요 활성화
 	public HttpEntity<?> commentUnlikeNoticeBoard(NoticeBoardCommentUnlikeVO noticeBoardCommentUnlikeVO) {
 		log.info("공지사항 댓글 싫어요 --> " + noticeBoardCommentUnlikeVO);
-		if(noticeBoardCommentUnlikeVO.getFlag() == null) {
-            noticeBoardDAO.noticeBoardCommentUnlikeUp(noticeBoardCommentUnlikeVO);
-		}
+        noticeBoardDAO.noticeBoardCommentUnlikeUp(noticeBoardCommentUnlikeVO);
 		
 		return new ResponseEntity<>(
 				ResDTO.builder()

@@ -4,11 +4,13 @@ import lombok.Data;
 
 @Data
 public class NoticeBoardCommentUnlikeVO {
+	private Integer noticeCommentLikeId;
 	private Integer noticeCommentUnlikeId;
 	private Integer noticeId;
 	private Integer noticeCommentId;
 	private Integer userId;
 	private String createAt;
 	
-	private Integer flag;
+	private boolean likeFlag;
+	private boolean unlikeFlag;
 }

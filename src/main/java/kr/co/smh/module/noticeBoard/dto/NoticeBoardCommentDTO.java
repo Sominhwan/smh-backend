@@ -15,4 +15,6 @@ public class NoticeBoardCommentDTO {
 	private int unlikeCount;
 	private boolean likeFlag;
 	private boolean unlikeFlag;
+	private Integer noticeCommentLikeId;
+	private Integer noticeCommentUnlikeId;
 }

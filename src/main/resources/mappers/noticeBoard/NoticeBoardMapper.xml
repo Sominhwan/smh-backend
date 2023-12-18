@@ -134,6 +134,8 @@
 				   ui.profile_url,
 				   nbc.like_count,
 				   nbc.unlike_count,
+				   nbcl.notice_comment_like_id,
+				   nbcu.notice_comment_unlike_id,
 	   			   case when nbcl.notice_comment_like_id is not null then true else false end as like_flag,
 	   			   case when nbcu.notice_comment_unlike_id is not null then true else false end as unlike_flag
 			from notice_board_comment nbc
@@ -228,24 +230,74 @@
 	</select>	
 	<!-- 공지사항 댓글 좋아요 활성화 -->
 	<select id="noticeBoardCommentLikeUp">
-		<![CDATA[
-			insert into notice_board_comment_like(
-				notice_id,
-				notice_comment_id,
-				user_id,
-				create_at
-			)
-			values(
-				#{noticeId},
-				#{noticeCommentId},
-				#{userId},
-				now()
-			);
-			update notice_board_comment
-			set like_count = like_count + 1
-			where notice_comment_id = #{noticeCommentId}
-			  and notice_id = #{noticeId};
-		]]>	
+	    <!-- 좋아요 활성화시(좋아요 비활성화)  -->
+		<if test='likeFlag'>
+			<![CDATA[
+				delete from notice_board_comment_like
+				where notice_comment_like_id = #{noticeCommentLikeId}
+				  and notice_id = #{noticeId}
+				  and notice_comment_id = #{noticeCommentId}
+				  and user_id = #{userId};
+				
+				update notice_board_comment
+				set like_count = like_count - 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};
+			]]>	
+		</if>
+		<!-- 좋아요, 싫어요 비활성화시(좋아요 홯성화) -->
+		<if test='!likeFlag and !unlikeFlag'>
+			<![CDATA[
+				insert into notice_board_comment_like(
+					notice_id,
+					notice_comment_id,
+					user_id,
+					create_at
+				)
+				values(
+					#{noticeId},
+					#{noticeCommentId},
+					#{userId},
+					now()
+				);
+				update notice_board_comment
+				set like_count = like_count + 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};
+			]]>	
+		</if>
+		<!-- 싫어요 활성화시(좋아요 홯성화, 싫어요 비활성화) -->
+		<if test='!likeFlag and unlikeFlag'>
+			<![CDATA[
+				delete from notice_board_comment_unlike
+				where notice_comment_unlike_id = #{noticeCommentUnlikeId}
+				  and notice_id = #{noticeId}
+				  and notice_comment_id = #{noticeCommentId}
+				  and user_id = #{userId};
+				  			
+				insert into notice_board_comment_like(
+					notice_id,
+					notice_comment_id,
+					user_id,
+					create_at
+				)
+				values(
+					#{noticeId},
+					#{noticeCommentId},
+					#{userId},
+					now()
+				);
+				update notice_board_comment
+				set like_count = like_count + 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};
+				  
+				update notice_board_comment
+				set unlike_count = unlike_count - 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};				  
+			]]>	
+		</if>				
 	</select>
 	<!-- 공지사항 댓글 싫어요 활성화 -->
 	<select id="noticeBoardCommentUnlikeUp">
