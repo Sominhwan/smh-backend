@@ -301,23 +301,73 @@
 	</select>
 	<!-- 공지사항 댓글 싫어요 활성화 -->
 	<select id="noticeBoardCommentUnlikeUp">
-		<![CDATA[
-			insert into notice_board_comment_unlike(
-				notice_id,
-				notice_comment_id,
-				user_id,
-				create_at
-			)
-			values(
-				#{noticeId},
-				#{noticeCommentId},
-				#{userId},
-				now()
-			);
-			update notice_board_comment
-			set unlike_count = unlike_count + 1
-			where notice_comment_id = #{noticeCommentId}
-			  and notice_id = #{noticeId};
-		]]>	
+	    <!-- 싫어요 활성화시(싫어요 비활성화)  -->
+	    <if test='unlikeFlag'>
+			<![CDATA[
+				delete from notice_board_comment_unlike
+				where notice_comment_unlike_id = #{noticeCommentUnlikeId}
+				  and notice_id = #{noticeId}
+				  and notice_comment_id = #{noticeCommentId}
+				  and user_id = #{userId};
+				
+				update notice_board_comment
+				set unlike_count = unlike_count - 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};
+			]]>		    
+		</if>	
+	    <!-- 좋아요, 싫어요 비활성화시(싫어요 홯성화) -->
+	    <if test='!unlikeFlag and !likeFlag'>
+			<![CDATA[
+				insert into notice_board_comment_unlike(
+					notice_id,
+					notice_comment_id,
+					user_id,
+					create_at
+				)
+				values(
+					#{noticeId},
+					#{noticeCommentId},
+					#{userId},
+					now()
+				);
+				update notice_board_comment
+				set unlike_count = unlike_count + 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};
+			]]>	
+		</if>	
+	    <!-- 좋아요 활성화시(좋아요 비홯성화, 싫어요 활성화) -->
+		<if test='!unlikeFlag and likeFlag'>
+			<![CDATA[
+				delete from notice_board_comment_like
+				where notice_comment_like_id = #{noticeCommentLikeId}
+				  and notice_id = #{noticeId}
+				  and notice_comment_id = #{noticeCommentId}
+				  and user_id = #{userId};
+				  			
+				insert into notice_board_comment_unlike(
+					notice_id,
+					notice_comment_id,
+					user_id,
+					create_at
+				)
+				values(
+					#{noticeId},
+					#{noticeCommentId},
+					#{userId},
+					now()
+				);
+				update notice_board_comment
+				set unlike_count = unlike_count + 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};
+				  
+				update notice_board_comment
+				set like_count = like_count - 1
+				where notice_comment_id = #{noticeCommentId}
+				  and notice_id = #{noticeId};				  
+			]]>	
+		</if>
 	</select>
 </mapper>
